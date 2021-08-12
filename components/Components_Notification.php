@@ -17,18 +17,23 @@ class Components_Notification {
 			$list_memories[$item_memory['ID']]['CAPACITY'] = $item_memory['CAPACITY'];
 		//	$list_memories[$item_memory['ID']]['HOST'] = $item_memory['NAME'];
 		}
-
 		$count_memories = count($list_memories);
-		if ($count_memories > $this->amount_memories) {
-			$this->amount_memories = $count_memories;
-			
+
+		$sql = "SELECT amount FROM hardware_components WHERE name = 'memories'";
+		$result_hardware = mysqli_query($connection, $sql);
+		$hardware_result = mysqli_fetch_array($result_hardware);
+					
+		if ($count_memories > $hardware_result['amount']) {
+			$sql = "UPDATE hardware_components SET amount = $count_memories WHERE name = 'memories'";
+			mysqli_query($connection, $sql);
 			$this->get_html_general_information($list_memories);
-			Send_Email($this->html);  // The notification email will be send 
+			echo 'i am here';
+			//Send_Email($this->html);  // The notification email will be send 
 		} else {
-			if ($count_memories < $this->amount_memories)
-			$this->amount_memories = $count_memories;
-			$this->get_html_general_information($list_memories);
-			Send_Email($this->html);  // The notification email will be send
+			if ($count_memories < $hardware_result['amount'])
+				$this->amount_memories = $count_memories;
+				$this->get_html_general_information($list_memories);
+				//Send_Email($this->html);  // The notification email will be send
 		}
 			$connection->close();
 	}
@@ -63,41 +68,6 @@ class Components_Notification {
 			</table>
 			<center>"; 
 	}
-
-	// Check if components table exists on database //	
-	private function verify_db_table($connection, $amount_memories, $component) {
-		$table = 'hardware_components';
-
-		$sql_create_table = "CREATE TABLE hardware_components (component_id INT NOT NULL AUTO_INCREMENT, name VARCHAR(40), amount INT NOT NULL, PRIMARY KEY ( id_component )";
-		$sql_insert_value = "INSERT INTO hardware_components (name, amount) VALUES ('$component', '$amount_memories')";
-		$sql_update_value = "UPDATE hardware_components SET amount=$amount_memories WHERE name=$component";
-
-		$query_table = mysqli_query("SHOW TABLES LIKE '$table'");
-		$query_table_result = $query_table && $query_table->num_rows > 0;
-		$query_value_result = mysqli_query("SELECT component_id FROM hardware_components WHERE name = '$component'");
-		
-		// check if table exist //
-		if ($query_table_result) {
-			// check if the entry exist //
-			if ($query_value_result) {
-				if ($connection->query($sql_update_value) === TRUE)
-					echo "Value has been update sucessfully\n";
-				else 
-					echo "Value hasn't been update" . $connection->error;
-			} else {
-				if ($connection->query($sql_insert_value) === TRUE) 
-					echo "Value has been insert sucessfully\n";
-				else 
-					echo "Value hasn't been insert" . $connection->error;
-			}		
-		} else {		
-			if ($connection->query($sql_create_table) === TRUE)
-				echo "Table has been create sucessfully\n";
-			else 
-				echo "Don't hasn't been create" . $connection->error;
-		}
-	}
-
 }
 ?>
 
