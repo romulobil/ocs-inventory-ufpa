@@ -1,9 +1,19 @@
+# 0.0.4 - 2021-08-10
+## Modificado
+- Método get_html_general_information() no código-fonte Components_Notification.php: Nova lógica implantada e modificação da assinatura do método.
+
+# 0.0.3 - 2021-08-10
+## Removido
+- Método verify_db_table() no código-fonte Components_Notificacation.php: O método tornou-se desnecessário para o decorrer do desenvolvimento.
+## Modificado
+- Método get_memories() no código-fonte Components_Notification.php: O método está temporariamente inativo para envio de e_mail. 
+
 # 0.0.2 - 2021-08-04
 ## Adicionado
 - Método verify_db_table() no código-fonte Components_Notification.php.
 
 ## Modificado
-- Método get_memories(). Desmembrou-se uma estrutura condicional (if) a fim de especializar a tomada
+- Método get_memories(). Desmembrou-se uma estrutura condicional (if) a fim de especializar a tomada.
 de decisão para duas situações: Adição e a remoção de componentes de hardware.
 
 # 0.0.1 - 2021-08-03
