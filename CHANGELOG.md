@@ -23,6 +23,8 @@ de decisão para duas situações: Adição e a remoção de componentes de hard
 - Arquivo send.php para o envio de emails.
 ## Changelog: Adicionado
 
+=
+
 # 0.0.0 - 2021-08-01
 - Arquivo CHANGELOG.md adicionado para fins de registros de modificações no código-fonte.
 - Arquivo README.md adicionado para explicitar, em linhas gerais, os motivos do  desenvolvimento do projeto.
