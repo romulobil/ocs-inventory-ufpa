@@ -11,6 +11,7 @@ class Components_Notification {
 		$sql = "SELECT * FROM memories";
 		$result_memories = mysqli_query($connection, $sql);
 		
+		$list_memories = array();
 		while ($item_memory = mysqli_fetch_array($result_memories)) {
 			$list_memories[$item_memory['ID']]['TYPE'] = $item_memory['TYPE'];
 			$list_memories[$item_memory['ID']]['CAPACITY'] = $item_memory['CAPACITY'];
@@ -19,6 +20,7 @@ class Components_Notification {
 
 		$count_memories = count($list_memories);
 		
+		$list_memories_cache = array();
 		$sql = "SELECT * FROM memories_cache";
 		$result_query = mysqli_query($connection, $sql);
 		while ($item_memory = mysqli_fetch_array($result_query)) {
@@ -29,11 +31,11 @@ class Components_Notification {
 		$count_memories_cache = count($list_memories_cache);
 	
 		if ($count_memories > $count_memories_cache) {
-			$sql = "TRUNCATE TABLE memories_cache;";
-			$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
 			$this->get_html_general_information($list_memories, $list_memories_cache, 
 				$connection, $is_additon = true, $hard_component = "Memory");
 			Send_Email($this->html);  // The notification email will be send 
+			$sql = "TRUNCATE TABLE memories_cache;";
+			$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
 			mysqli_multi_query($connection, $sql);
 		} else {
 			if ($count_memories < $count_memories_cache) {
@@ -135,7 +137,7 @@ class Components_Notification {
 			}	
 					$this->html .= "</table></center>";
 					if ($critical_situation > 0)
-						$this->html .= "Lista de Avisos:<br>- Foi detectado a remoção de um ativo no seu parque tecnológico.";
+						$this->html .= "Lista de Avisos:<br>- Foi detectado uma possível remoção de um ativo no seu parque tecnológico.";
 					else 
 						$this->html .= "Lista de Avisos:<br>- Não foi detectado nenhuma situação crítica.";
 		}
