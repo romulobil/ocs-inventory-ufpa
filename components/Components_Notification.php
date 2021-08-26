@@ -1,7 +1,9 @@
 <?php
 require __DIR__.'/send.php'; 
 class Components_Notification {
-	
+	public $html_part_addition;
+	public $html_part_remove;
+
 	private function db_connect() {	
 		$config_db = parse_ini_file(__DIR__ . '/database.ini');	
 		$connection = mysqli_connect($config_db['localhost'], $config_db['username'], $config_db['password'], 
@@ -12,10 +14,51 @@ class Components_Notification {
 			return $connection;
 	}
 	
-	public $html_part_addition;
-	public $html_part_remove;
-
 	// check the monitors presents on database //
+	public function get_videos() {
+		$connection = $this->db_connect();
+		$sql = "SELECT * FROM videos";
+		$result_videos = mysqli_query($connection, $sql);
+
+		$list_videos = array();
+		while($item_videos = mysqli_fetch_array($result_videos)) {
+			$list_videos[$item_videos['ID']]['NAME'] = $item_videos['NAME'];		
+			$list_videos[$item_videos['ID']]['MEMORY'] = $item_videos['MEMORY'];		
+			$list_videos[$item_videos['ID']]['HARDWARE_ID'] = $item_videos['HARDWARE_ID'];		
+		}
+	
+		$count_videos = count($list_videos);
+		
+		$sql = "SELECT * FROM videos_cache";
+		$result_query = mysqli_query($connection, $sql);
+
+		$list_videos_cache = array();
+		while($item_videos = mysqli_fetch_array($result_query)) {
+			$list_videos_cache[$item_videos['ID']]['NAME'] = $item_videos['NAME'];		
+			$list_videos_cache[$item_videos['ID']]['HARDWARE_ID'] = $item_videos['H_ID'];		
+		}
+	
+		$count_videos_cache = count($list_videos_cache);
+
+		if ($count_videos > $count_videos_cache) {
+			$this->get_html_general_information($list_videos, $list_videos_cache, 
+				$connection, $is_addition = true, $hard_component = "Board Videos");
+			$sql = "TRUNCATE TABLE videos_cache;";
+			$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
+			mysqli_multi_query($connection, $sql);
+		} else {
+			if ($count_videos < $count_videos_cache) {
+				$this->get_html_general_information($list_videos, $list_videos_cache, 
+					$connection, $is_addition = false, $hard_component = "Board Videos");
+				$sql = "TRUNCATE TABLE videos_cache;";
+				$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
+				mysqli_multi_query($connection, $sql);
+			}
+		}
+
+	}
+
+
 	public function get_monitors () {
 		$connection = $this->db_connect();
 		$sql = "SELECT * FROM monitors";
