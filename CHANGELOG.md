@@ -7,6 +7,9 @@
 - Método get_monitors() no código-fonte Components_Notification.php.
 
 ## Changelog: Modificado
+- Arquivo cron_mailer.php: Adicionado a chamada do método get_monitors().
+
+## Changelog: Modificado
 - Método get_html_general_information() no código-fonte Components_Notification.php: Adaptação do método para haver a criação unificada de e-mail para todos os componentes. 
 - Classe Components_Notification.php: Dois campos de instância adicionados, html_part_addition e html_part_remove.
 
