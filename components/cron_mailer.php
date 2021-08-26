@@ -5,7 +5,8 @@ require_once( __DIR__ . '/send.php');
 	$obj = new Components_Notification();
 	$obj->get_memories();
 	$obj->get_monitors();
-	
+	$obj->get_videos();	
+
 	$body_mail = $obj->html_part_addition . $obj->html_part_remove;
 	if ($body_mail != '')
 		Send_Email($body_mail);
