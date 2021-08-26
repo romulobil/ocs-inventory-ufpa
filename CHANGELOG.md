@@ -1,9 +1,13 @@
+# 0.0.7 - 2021-08-26
+## Changelog: Adicionado
+- Método get_videos() no código-fonte Componentes_Notification.php.
+
 # 0.0.6 - 2021-08-24
 ## Changelog: Adicionado
 - Método get_monitors() no código-fonte Components_Notification.php.
 
 ## Changelog: Modificado
-- Método get_html_general_information() no código-fonte Components_Notification.php: 
+- Método get_html_general_information() no código-fonte Components_Notification.php: Adaptação do método para haver a criação unificada de e-mail para todos os componentes. 
 - Classe Components_Notification.php: Dois campos de instância adicionados, html_part_addition e html_part_remove.
 
 # 0.0.5/Stable_Version - 2021-08-20
@@ -13,14 +17,14 @@
 
 # 0.0.4 - 2021-08-10
 ## Changelog: Modificado
-- Método get_html_general_information() no código-fonte Components_Notification.php: Nova lógica implantada e modificação da assinatura do método.
+- Método get_html_general_information(): Nova lógica implantada e modificação da assinatura do método.
 
 # 0.0.3 - 2021-08-10
 ## Changelog: Removido
 - Método verify_db_table() no código-fonte Components_Notificacation.php: O método tornou-se desnecessário para o decorrer do desenvolvimento.
 
 ## Changelog: Modificado
-- Método get_memories() no código-fonte Components_Notification.php: O método está temporariamente inativo para envio de e_mail. 
+- Método get_memories(): O método está temporariamente inativo para envio de e_mail. 
 
 # 0.0.2 - 2021-08-04
 ## Changelog: Adicionado
