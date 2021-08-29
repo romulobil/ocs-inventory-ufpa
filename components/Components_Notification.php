@@ -13,6 +13,54 @@ class Components_Notification {
 		else
 			return $connection;
 	}
+
+	// check the monitors presentes on database //
+	public function get_storages() {
+		$connection = $this->db_connect();
+		$sql = "SELECT * FROM storages";
+		$result_storages = mysqli_query($connection, $sql);
+		
+		$list_storages = array();
+		while ($item_storages = mysqli_fetch_array($result_storages)) {
+			$list_storages[$item_storages['ID']]['NAME'] = $item_storages['NAME'];
+			$list_storages[$item_storages['ID']]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
+			$list_storages[$item_storages['ID']]['DESCRIPTION'] = $item_storages['DESCRIPTION'];
+			$list_storages[$item_storages['ID']]['HARDWARE_ID'] = $item_storages['HARDWARE_ID'];
+
+		}
+		
+		$count_storages = count($list_storages);
+
+		$sql = "SELECT * FROM storages_cache";
+		$result_query = mysqli_query($connection, $sql);
+		
+		$list_storages_cache = array();
+		while ($item_storages = mysqli_fetch_array($result_query)) {
+			$list_storages_cache[$item_storages['ID']]['NAME'] = $item_storages['NAME'];
+			$list_storages_cache[$item_storages['ID']]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
+			$list_storages_cache[$item_storages['ID']]['DESCRIPTION'] = $item_storages['DESCRIPTION'];
+			$list_storages_cache[$item_storages['ID']]['HARDWARE_ID'] = $item_storages['H_ID'];
+		}
+		
+		$count_storages_cache = count($list_storages_cache);
+
+		if ($count_storages > $count_storages_cache) {
+			$this->get_html_general_information($list_storages, $list_storages_cache, 
+				$connection, $is_addition = true, $hard_component = "Storages");
+			//$sql = "TRUNCATE TABLE storages_cache;";
+			//$sql .= "REPLACE INTO storages_cache(ID, H_ID, NAME, DESCRIPTION, MANUFACTURER) SELECT id, hardware_id, name, description, manufacturer FROM storages;";
+			//mysqli_multi_query($connection, $sql);
+		} else {
+			if ($count_storages < $count_storages_cache) {
+				$this->get_html_general_information($list_storages, $list_storages_cache, 
+					$connection, $is_addition = false, $hard_component = "Storages");
+				//$sql = "TRUNCATE TABLE storages_cache;";
+				//$sql .= "REPLACE INTO storages_cache(ID, H_ID, NAME, DESCRIPTION, MANUFACTURER) SELECT id, hardware_id, name, description, manufacturer FROM storages;";
+				//mysqli_multi_query($connection, $sql);
+			}
+		}
+	}
+	
 	
 	// check the monitors presents on database //
 	public function get_videos() {
@@ -43,16 +91,16 @@ class Components_Notification {
 		if ($count_videos > $count_videos_cache) {
 			$this->get_html_general_information($list_videos, $list_videos_cache, 
 				$connection, $is_addition = true, $hard_component = "Board Videos");
-			$sql = "TRUNCATE TABLE videos_cache;";
-			$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
-			mysqli_multi_query($connection, $sql);
+			//$sql = "TRUNCATE TABLE videos_cache;";
+			//$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
+			//mysqli_multi_query($connection, $sql);
 		} else {
 			if ($count_videos < $count_videos_cache) {
 				$this->get_html_general_information($list_videos, $list_videos_cache, 
 					$connection, $is_addition = false, $hard_component = "Board Videos");
-				$sql = "TRUNCATE TABLE videos_cache;";
-				$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
-				mysqli_multi_query($connection, $sql);
+				//$sql = "TRUNCATE TABLE videos_cache;";
+				//$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
+				//mysqli_multi_query($connection, $sql);
 			}
 		}
 
@@ -85,16 +133,16 @@ class Components_Notification {
 		if ($count_monitors > $count_monitors_cache) {
 			$this->get_html_general_information($list_monitors, $list_monitors_cache, 
 				$connection, $is_addition = true, $hard_component = "Monitors");
-			$sql = "TRUNCATE TABLE monitors_cache;";
-			$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT id, hardware_id, MANUFACTURER FROM monitors;";
-			mysqli_multi_query($connection, $sql);
+			//$sql = "TRUNCATE TABLE monitors_cache;";
+			//$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT id, hardware_id, MANUFACTURER FROM monitors;";
+			//mysqli_multi_query($connection, $sql);
 		} else {
 			if ($count_monitors < $count_monitors_cache) {
 				$this->get_html_general_information($list_monitors, $list_monitors_cache, 
 					$connection, $is_addition = false, $hard_component = "Monitors");
-				$sql = "TRUNCATE TABLE monitors_cache;";
-				$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT id, hardware_id, MANUFACTURER FROM monitors;";
-				mysqli_multi_query($connection, $sql);
+				//$sql = "TRUNCATE TABLE monitors_cache;";
+				//$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT id, hardware_id, MANUFACTURER FROM monitors;";
+				//mysqli_multi_query($connection, $sql);
 			}
 		}
 	}
@@ -128,16 +176,16 @@ class Components_Notification {
 		if ($count_memories > $count_memories_cache) {
 			$this->get_html_general_information($list_memories, $list_memories_cache, 
 				$connection, $is_addition = true, $hard_component = "Memory");
-			$sql = "TRUNCATE TABLE memories_cache;";
-			$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
-			mysqli_multi_query($connection, $sql);
+			//$sql = "TRUNCATE TABLE memories_cache;";
+			//$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
+			//mysqli_multi_query($connection, $sql);
 		} else {
 			if ($count_memories < $count_memories_cache) {
 				$this->get_html_general_information($list_memories, $list_memories_cache, 
 					$connection, $is_addition = false, $hard_component = "Memory");
-				$sql = "TRUNCATE TABLE memories_cache;";
-				$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
-				mysqli_multi_query($connection, $sql);
+				//$sql = "TRUNCATE TABLE memories_cache;";
+				//$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
+				//mysqli_multi_query($connection, $sql);
 			}
 		}
 	}
@@ -158,7 +206,7 @@ class Components_Notification {
 				<h2> $hard_component <h2>	
 				<table border='1' bgcolor='B8B0AE'>
 				<tr>\n";
-			$reference_array = '1';
+			$reference_array = array_key_first($list_hardware);
 			foreach ($list_hardware[$reference_array] as $label => $value) {
 					$this->html_part_addition .= "<th>$label</th>\n";
 			} 
@@ -202,8 +250,8 @@ class Components_Notification {
 					<table border='1' bgcolor='B8B0AE'>
 					<tr>\n";
 
-			$reference_array = '1';
 			$critical_situation = 0;	
+			$reference_array = array_key_first($hardware_cache);
 			foreach ($hardware_cache[$reference_array] as $label => $value) {
 					$this->html_part_remove .= "<th>$label</th>\n";
 			}
