@@ -1,3 +1,11 @@
+# 0.0.8 - 2021-08-29
+## Changelog: Adicionado
+- Método get_storages() no código-fonte Comnponentes_Notification.php
+
+## Changelog: Modificado
+- Classe Components_Notification.php. Mudança de nome para adequar-se ao PHP code style
+- Arquivo cron_mailer.php: Adicionado a chamada do método get_storages();
+
 # 0.0.7 - 2021-08-26
 ## Changelog: Adicionado
 - Método get_videos() no código-fonte Componentes_Notification.php.
