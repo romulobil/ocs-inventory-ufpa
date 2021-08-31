@@ -1,4 +1,4 @@
-# 0.9 - 2021-08-29
+# 0.9 - 2021-08-31
 ## Changelog: Adicionado
 - Método get_cpus() no código-fonte ComponentsNotification.php
 - Função db_connect() no código-fonte ComponentsNotification.php	
