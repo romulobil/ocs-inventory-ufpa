@@ -4,12 +4,30 @@
  use PHPMailer\PHPMailer\SMTP;
 
 
+function get_credentials() {
+	require_once('../../var.php');
+	require_once(CONF_MYSQL);
+	require_once('../function_commun.php');
+
+	$_SESSION['OCS']["readServer"] = dbconnect(SERVER_READ, COMPTE_BASE, PSWD_BASE, DB_NAME, SSL_KEY, SSL_CERT, CA_CERT, SERVER_PORT);
+		
+	$sql = "SELECT * FROM notification_config";
+	$result_query = mysqli_query($_SESSION["OCS"]["readServer"], $sql);
+	$all_credentials = array();
+	while ($credentials = mysqli_fetch_array($result_query)) {
+		$all_credentials[$credentials['NAME']]['TVALUE'] = $credentials['TVALUE'];
+	}
+
+	return $all_credentials;	
+}
+
 function Send_Email($html) {
 	require __DIR__.'/../../vendor/phpmailer/phpmailer/src/Exception.php';
 	require __DIR__.'/../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 	require __DIR__.'/../../vendor/phpmailer/phpmailer/src/SMTP.php';
 
-	$config_mail = parse_ini_file(__DIR__ . '/mail.ini');
+	$all_credentials = array();
+	$all_credentials = get_credentials();
 	$mail = new PHPMailer();
 
 	/* #########################
@@ -18,21 +36,21 @@ function Send_Email($html) {
 	 */
 	$assunto = 'Teste de email de ativos';
 	$message = $html;
-	$usermail = $config_mail['usermail'];
-	$username = $config_mail['username'];
-	$password = $config_mail['password'];
+	$usermail = $all_credentials['NOTIF_MAIL_ADMIN']['TVALUE'];
+	$username = $all_credentials['NOTIF_NAME_ADMIN']['TVALUE'];
+	$password = $all_credentials['NOTIF_PASSWD_SMTP']['TVALUE'];
 
 	/* Se for do Gmail o servidor é: smtp.gmail.com */
-	$host_do_email = 'smtp.gmail.com';
+	$host_do_email = $all_credentials['NOTIF_SMTP_HOST']['TVALUE'];
 
 	/* Configura os destinatários  */
-	$mail->AddAddress($config_mail['receivermail'], $config_mail['receiveruser']);
+	$mail->AddAddress($all_credentials['NOTIF_MAIL_ADMIN']['TVALUE'], $all_credentials['NOTIF_NAME_ADMIN']['TVALUE']);
 	// $mail->AddAddress('email@email.com');
 	// $mail->AddCC('email@email.com', 'Nome da pessoa'); // Copia
 	// $mail->AddBCC('email@email.com', 'Nome da pessoa'); // Cópia Oculta
 
 	/* ###########################
-	 * # CONFIGURAÇÕES AVANÇADAS # 
+	 * # CONFIGURA # 
 	 * ###########################
 	 */
 					
@@ -43,9 +61,9 @@ function Send_Email($html) {
 	/* Utilizar autenticação SMTP */ 
 	$mail->SMTPAuth = true;
 	/* Protocolo da conexão */
-	$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+	$mail->SMTPSecure = $all_credentials['NOTIF_SEND_MODE']['TVALUE'];
 	/* Porta da conexão */
-	$mail->Port = "587";
+	$mail->Port = $all_credentials['NOTIF_PORT_SMTP']['TVALUE'];
 	/* Email ou usuário para autenticação */
 	$mail->Username = $usermail;
 	/* Senha do usuário */
@@ -74,7 +92,8 @@ function Send_Email($html) {
 	//$mail->AddAttachment("foto.jpg", "foto.jpg");  // Insere um anexo
 
 	/* Envia o email */
-	$sended_mail = $mail->Send();
+	if ($all_credentials['NOTIF_FOLLOW']['TVALUE'] == 'ON')
+		$sended_mail = $mail->Send();
 
 	/* Limpa tudo */
 	$mail->ClearAllRecipients();
@@ -89,4 +108,4 @@ function Send_Email($html) {
 	}
 
 }
-?>
+
