@@ -3,6 +3,10 @@
 - Método get_cpus() no código-fonte ComponentsNotification.php
 - Função db_connect() no código-fonte ComponentsNotification.php	
 
+## Changelog: Modificado
+- Função Send_Email(): utilização das credenciais de email fornecidas via interface gráfica
+- Arquivo cron_mailer.php: Adicionado a chamada do método get_cpus()
+
 ## Changelog: Removido
 - Método db_connect()
 
