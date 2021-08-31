@@ -10,6 +10,7 @@ require_once __DIR__ . '/send.php';
 	$obj->get_monitors();
 	$obj->get_videos();
 	$obj->get_storages();	
+	$obj->get_cpus();	
 
 	// html_part_addition e html_part_remove são partes integrantes de ComponentsNotification
 	$body_mail = $obj->html_part_addition . $obj->html_part_remove;
