@@ -5,9 +5,9 @@
 
 
 function get_credentials() {
-	require_once('../../var.php');
+	require_once(__DIR__ . '/../../var.php');
 	require_once(CONF_MYSQL);
-	require_once('../function_commun.php');
+	require_once(__DIR__ . '/../function_commun.php');
 
 	$_SESSION['OCS']["readServer"] = dbconnect(SERVER_READ, COMPTE_BASE, PSWD_BASE, DB_NAME, SSL_KEY, SSL_CERT, CA_CERT, SERVER_PORT);
 		
