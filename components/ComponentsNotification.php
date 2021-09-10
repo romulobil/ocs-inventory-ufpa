@@ -2,7 +2,7 @@
 
 function db_connect() {
 	require_once __DIR__ . "/../../var.php";
-	require_once(CONF_MYSQL);	
+	require_once(CONF_MYSQL);
 	require_once __DIR__ . "/../function_commun.php";
 
 	$_SESSION["OCS"]["readServer"] = dbconnect(SERVER_READ, COMPTE_BASE, PSWD_BASE, DB_NAME, SSL_KEY, SSL_CERT, CA_CERT, SERVER_PORT);
@@ -16,53 +16,49 @@ class ComponentsNotification
 	public $html_part_addition;
 	public $html_part_remove;
 
-
-	// Método que gera o htl para o corpo do email 
-	public function get_html_general_information($list_hardware, $hardware_cache, $connection, $is_addition, $hard_component) {
-		// No caso do componente ter sido adicionado 
-		if ($is_addition) {
+	public function get_html_info_addition($list_hardware, $connection, $hard_component) {
+		for ($i = 0; $i <= array_key_last($list_hardware); $i++) {
 			if ($this->html_part_addition == '') {
-					$this->html_part_addition .= "
-					<hr>
-					<center>
-						<h1> Novos Componentes de Hardware Adicionados <h1>
-					</center>
-					<hr>";
-			}
-			$this->html_part_addition .= "
-				<br><center>
-				<h2> $hard_component <h2>	
-				<table border='1' bgcolor='B8B0AE'>
-				<tr>\n";
+				$this->html_part_addition .= "
+				<hr>
+				<center>
+					<h1> Novos Componentes de Hardware Adicionados <h1>
+				</center>
+				<hr>";
+				$this->html_part_addition .= "
+					<br><center>
+					<h2> $hard_component <h2>	
+					<table border='collapse' bgcolor='B8B0AE'>
+					<tr>\n";
+				}
+
 			$reference_array = array_key_first($list_hardware);
 			foreach ($list_hardware[$reference_array] as $label => $value) {
-					$this->html_part_addition .= "<th>$label</th>\n";
+				$this->html_part_addition .= "<th>$label</th>\n";
 			} 
 			$this->html_part_addition .= "</tr>\n<tr>";
-			
-			for ($i = 1; $i <= array_key_last($list_hardware); $i++) {
-				if (array_key_exists($i, $list_hardware) and !array_key_exists($i, $hardware_cache)) {
-					foreach ($list_hardware["$i"] as $feature => $value) {
-						if ($value == 'Unknown' or $value == '') { 
-							$this->html_part_addition .= "<td style='text-align:center'> Não Informado </td>\n";
-							continue;
-						}
-						if ($feature == "HARDWARE_ID") {
-							$sql = "SELECT userid FROM hardware WHERE id = '$value'";
-							$result_id = mysqli_query($connection, $sql);
-							$id = mysqli_fetch_array($result_id);	
-							$this->html_part_addition .= "<td style='text-align:center'>" . $id['userid'] . "</td><td bgcolor='green' style='text-align:center'> Adicionado </td>\n";
-						} else {
-							$this->html_part_addition .= "<td style='text-align:center'>$value</td>\n";
-						}
-					}
-				} else { continue; }
-				$this->html_part_addition .= "</tr><tr>";
-			}
-				$this->html_part_addition .= "</table></center><br>";
 
-		// No caso de um componente ter sido removido
-		} else {
+			foreach ($list_hardware["$i"] as $feature => $value) {
+				if ($value == 'Unknown' or $value == '') { 
+					$this->html_part_addition .= "<td style='text-align:center'> Não Informado </td>\n";
+					continue;
+				}
+				if ($feature == "HARDWARE_ID") {
+					$sql = "SELECT userid FROM hardware WHERE ID = '$value'";
+					$result_id = mysqli_query($connection, $sql);
+					$id = mysqli_fetch_array($result_id);	
+					$this->html_part_addition .= "<td style='text-align:center'>" . $id['userid'] . "</td><td bgcolor='green' style='text-align:center'> Adicionado </td>\n";
+				} else {
+					$this->html_part_addition .= "<td style='text-align:center'>$value</td>\n";
+				}
+			}
+			$this->html_part_addition .= "</tr><tr>";
+		}
+		$this->html_part_addition .= "</table></center><br>";
+	}
+	
+	public function get_html_info_removed($hardware_cache, $connection, $hard_component) {
+		for ($i = 0; $i <= array_key_last($hardware_cache); $i++) {
 			if ($this->html_part_remove == '') {
 				$this->html_part_remove .= "
 					<br>
@@ -71,49 +67,45 @@ class ComponentsNotification
 						<h1> Novos Componentes de Hardware Retirados <h1>
 					</center>
 					<hr>";
+				$this->html_part_remove .= "
+					<br><center>
+						<h2> $hard_component <h2>	
+						<table border='1' bgcolor='B8B0AE'>
+						<tr>\n";
 			}
-			$this->html_part_remove .= "
-				<br><center>
-					<h2> $hard_component <h2>	
-					<table border='1' bgcolor='B8B0AE'>
-					<tr>\n";
-
 			$critical_situation = 0;	
 			$reference_array = array_key_first($hardware_cache);
 			foreach ($hardware_cache[$reference_array] as $label => $value) {
-					$this->html_part_remove .= "<th>$label</th>\n";
+				$this->html_part_remove .= "<th>$label</th>\n";
 			}
 			$this->html_part_remove .= "</tr>\n<tr>";
-			for ($i = 1; $i <= array_key_last($hardware_cache); $i++) {
-				if (!array_key_exists($i, $list_hardware) && array_key_exists($i, $hardware_cache)) {
-					foreach ($hardware_cache["$i"] as $feature => $value) {
-						if ($value == 'Unknown' or $value == '') {
-							$this->html_part_remove .= "<td style='text-align:center'> Não Informado </td>\n";
-							continue;
-						}
-						if ($feature == "HARDWARE_ID") {
-							$sql = "SELECT userid FROM hardware WHERE id = '$value'";
-							$result_id = mysqli_query($connection, $sql);
-							$id = mysqli_fetch_array($result_id);
-							if ($id['userid'] == '') {
-								$this->html_part_remove .= "<td style='text-align:center'> Não Encontrado </td><td bgcolor='#e31111' style='text-align:center'> Computador Removido </td>\n";
-								$critical_situation++;
-							} else {
-								$this->html_part_remove .= "<td style='text-align:center'>" . $id['userid'] . "</td><td bgcolor='#e31111' style='text-align:center'> Removido </td>\n";
-							}
-						} else {
-							$this->html_part_remove .= "<td style='text-align:center'>$value</td>\n";
-						}
+
+			foreach ($hardware_cache["$i"] as $feature => $value) {
+				if ($value == 'Unknown' or $value == '') {
+					$this->html_part_remove .= "<td style='text-align:center'> Não Informado </td>\n";
+					continue;
+				}
+				if ($feature == "HARDWARE_ID") {
+					$sql = "SELECT userid FROM hardware WHERE id = '$value'";
+					$result_id = mysqli_query($connection, $sql);
+					$id = mysqli_fetch_array($result_id);
+					if ($id['userid'] == '') {
+						$this->html_part_remove .= "<td style='text-align:center'> Não Encontrado </td><td bgcolor='#e31111' style='text-align:center'> Computador Removido </td>\n";
+						$critical_situation++;
+					} else {
+						$this->html_part_remove .= "<td style='text-align:center'>" . $id['userid'] . "</td><td bgcolor='#e31111' style='text-align:center'> Removido </td>\n";
 					}
-					$this->html_part_remove .= "</tr><tr>";
-				} else { continue; }
-			}	
-					$this->html_part_remove .= "</table></center><br>";
-					if ($critical_situation > 0)
-						$this->html_part_remove .= "Lista de Avisos:<br>- Foi detectado uma possível remoção de um ativo no seu parque tecnológico.<br>";
-					else 
-						$this->html_part_remove .= "Lista de Avisos:<br>- Não foi detectado nenhuma situação crítica.<br>";
+				} else {
+					$this->html_part_remove .= "<td style='text-align:center'>$value</td>\n";
+				}
+			}
+			$this->html_part_remove .= "</tr><tr>";
 		}
+			$this->html_part_remove .= "</table></center><br>";
+			if ($critical_situation > 0)
+				$this->html_part_remove .= "Warnings:<br>- Has been detected a critical situation. It's possible some asset has been removed.<br>";
+			else 
+				$this->html_part_remove .= "Warnings:<br>- Hasn't been detected anyone critical situation.<br>";
 	}
 
 
@@ -141,18 +133,32 @@ class ComponentsNotification
 
 		$count_cpus_cache = count($list_cpus_cache);
 		
-		if ($count_cpus > $count_cpus_cache) {
-			$this->get_html_general_information($list_cpus, $list_cpus_cache, 
-				$connection, $is_addition = true, $hard_component = "Cpu");
+		$added_cpus = array();
+		$removed_cpus = array();
+		for ($i = 1; $i <= array_key_last($list_cpus); $i++) {
+			if (array_key_exists($i, $list_cpus) and !array_key_exists($i, $list_cpus_cache)) {
+				array_push($added_cpus, $list_cpus["$i"]);
+			}
+		}
+
+		if ($added_cpus != NULL) {
+			$this->get_html_info_addition($added_cpus, $connection, $hard_component = "Cpu");
+		}
+
+		for ($i = 1; $i <= array_key_last($list_cpus_cache); $i++) {
+			if (!array_key_exists($i, $list_cpus) and array_key_exists($i, $list_cpus_cache)) {
+				array_push($removed_cpus, $list_cpus_cache["$i"]);
+			}
+		}
+
+		if ($removed_cpus != NULL) {
+			$this->get_html_info_removed($removed_cpus, $connection, $hard_component = "Cpu");
+		}
+
+		if ($added_cpus != NULL or $removed_cpus != NULL) {
 			$sql = "TRUNCATE TABLE cpus_cache;";
-			$sql .= "REPLACE INTO cpus_cache(ID, H_ID, TYPE, MANUFACTURER) SELECT id, hardware_id, type, manufacturer FROM cpus;";
+			$sql .= "REPLACE INTO cpus_cache(ID, H_ID, TYPE, MANUFACTURER) SELECT ID, HARDWARE_ID, TYPE, MANUFACTURER FROM cpus;";
 			mysqli_multi_query($connection, $sql);
-		} elseif ($count_cpus < $count_cpus_cache) {
-				$this->get_html_general_information($list_cpus, $list_cpus_cache, 
-					$connection, $is_addition = false, $hard_component = "Cpu");
-				$sql = "TRUNCATE TABLE cpus_cache;";
-				$sql .= "REPLACE INTO cpus_cache(ID, H_ID, TYPE, MANUFUCTURER) SELECT id, hardware_id, type, manufucturer FROM cpus;";
-				mysqli_multi_query($connection, $sql);
 		}
 	}
 
@@ -180,22 +186,27 @@ class ComponentsNotification
 		}
 
 		$count_memories_cache = count($list_memories_cache);
-		
-		if ($count_memories > $count_memories_cache) {
-			$this->get_html_general_information($list_memories, $list_memories_cache, 
-				$connection, $is_addition = true, $hard_component = "Memory");
+
+		if (($count_memories != 0 and $count_memories_cache != 0) and $count_memories == $count_memories_cache) {
+
+		} elseif ($count_memories > $count_memories_cache) {
+			$this->get_html_info_addition($list_memories, $list_memories_cache, 
+				$connection, $hard_component = "Memory");
+			$this->get_html_info_remove($list_memories, $list_memories_cache, 
+				$connection, $hard_component = "Memory");
 			$sql = "TRUNCATE TABLE memories_cache;";
-			$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
+			$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT ID, HARDWARE_ID, TYPE FROM memories;";
 			mysqli_multi_query($connection, $sql);
 		} elseif ($count_memories < $count_memories_cache) {
-				$this->get_html_general_information($list_memories, $list_memories_cache, 
-					$connection, $is_addition = false, $hard_component = "Memory");
-				$sql = "TRUNCATE TABLE memories_cache;";
-				$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT id, hardware_id, type FROM memories;";
-				mysqli_multi_query($connection, $sql);
+			$this->get_html_info_remove($list_memories, $list_memories_cache, 
+				$connection, $hard_component = "Memory");
+			$this->get_html_info_addition($list_memories, $list_memories_cache, 
+				$connection, $hard_component = "Memory");
+			$sql = "TRUNCATE TABLE memories_cache;";
+			$sql .= "REPLACE INTO memories_cache(ID, H_ID, TYPE) SELECT ID, HARDWARE_ID, TYPE FROM memories;";
+			mysqli_multi_query($connection, $sql);
 		}
 	}
-
 
 	// Verifica os monitores presentes no banco de dados 
 	public function get_monitors() {
@@ -221,17 +232,23 @@ class ComponentsNotification
 		}
 		
 		$count_monitors_cache = count($list_monitors_cache);
-		if ($count_monitors > $count_monitors_cache) {
-			$this->get_html_general_information($list_monitors, $list_monitors_cache, 
-				$connection, $is_addition = true, $hard_component = "Monitors");
+		if (($count_monitors != 0 and $count_monitors_cache != 0) and $count_monitors == $count_monitors_cache) {
+			// houve alteracao
+		} elseif ($count_monitors > $count_monitors_cache) {
+			$this->get_html_info_addition($list_monitors, $list_monitors_cache, 
+				$connection, $hard_component = "Monitors");
+			$this->get_html_info_remove($list_monitors, $list_monitors_cache, 
+				$connection, $hard_component = "Monitors");
 			$sql = "TRUNCATE TABLE monitors_cache;";
-			$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT id, hardware_id, MANUFACTURER FROM monitors;";
+			$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT ID, HARDWARE, MANUFACTURER FROM monitors;";
 			mysqli_multi_query($connection, $sql);
 		} elseif ($count_monitors < $count_monitors_cache) {
-				$this->get_html_general_information($list_monitors, $list_monitors_cache, 
-					$connection, $is_addition = false, $hard_component = "Monitors");
+				$this->get_html_info_remove($list_monitors, $list_monitors_cache, 
+					$connection, $hard_component = "Monitors");
+				$this->get_html_info_addition($list_monitors, $list_monitors_cache, 
+					$connection, $hard_component = "Monitors");
 				$sql = "TRUNCATE TABLE monitors_cache;";
-				$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT id, hardware_id, MANUFACTURER FROM monitors;";
+				$sql .= "REPLACE INTO monitors_cache(ID, H_ID, MANUFACTURER) SELECT ID, HARDWARE_ID, MANUFACTURER FROM monitors;";
 				mysqli_multi_query($connection, $sql);
 		}
 	}
@@ -265,18 +282,23 @@ class ComponentsNotification
 		}
 		
 		$count_storages_cache = count($list_storages_cache);
-
-		if ($count_storages > $count_storages_cache) {
-			$this->get_html_general_information($list_storages, $list_storages_cache, 
-				$connection, $is_addition = true, $hard_component = "Storages");
+		if (($count_storages != 0 and $count_storages_cache != 0) and $count_storages == $count_storages_cache) {
+			// houve alteracao
+		} elseif ($count_storages > $count_storages_cache) {
+			$this->get_html_info_addition($list_storages, $list_storages_cache, 
+				$connection, $hard_component = "Storages");
+			$this->get_html_info_remove($list_storages, $list_storages_cache, 
+				$connection, $hard_component = "Storages");
 			$sql = "TRUNCATE TABLE storages_cache;";
-			$sql .= "REPLACE INTO storages_cache(ID, H_ID, NAME, DESCRIPTION, MANUFACTURER) SELECT id, hardware_id, name, description, manufacturer FROM storages;";
+			$sql .= "REPLACE INTO storages_cache(ID, H_ID, NAME, DESCRIPTION, MANUFACTURER) SELECT ID, HARDWARE_ID, NAME, DESCRIPTION, MANUFACTURER FROM storages;";
 			mysqli_multi_query($connection, $sql);
 		} elseif ($count_storages < $count_storages_cache) {
-				$this->get_html_general_information($list_storages, $list_storages_cache, 
-					$connection, $is_addition = false, $hard_component = "Storages");
+				$this->get_html_info_remove($list_storages, $list_storages_cache, 
+					$connection, $hard_component = "Storages");
+				$this->get_html_info_addition($list_storages, $list_storages_cache, 
+					$connection, $hard_component = "Storages");
 				$sql = "TRUNCATE TABLE storages_cache;";
-				$sql .= "REPLACE INTO storages_cache(ID, H_ID, NAME, DESCRIPTION, MANUFACTURER) SELECT id, hardware_id, name, description, manufacturer FROM storages;";
+				$sql .= "REPLACE INTO storages_cache(ID, H_ID, NAME, DESCRIPTION, MANUFACTURER) SELECT ID, HARDWARE_ID, NAME, DESCRIPTION, MANUFACTURER FROM storages;";
 				mysqli_multi_query($connection, $sql);
 		}
 	}
@@ -306,18 +328,24 @@ class ComponentsNotification
 		}
 	
 		$count_videos_cache = count($list_videos_cache);
+		
+		if (($count_videos != 0 and $count_videos_cache != 0) and $count_videos == $count_videos_cache) {
 
-		if ($count_videos > $count_videos_cache) {
-			$this->get_html_general_information($list_videos, $list_videos_cache, 
-				$connection, $is_addition = true, $hard_component = "Board Videos");
+		} elseif ($count_videos > $count_videos_cache) {
+			$this->get_html_info_addition($list_videos, $list_videos_cache, 
+				$connection, $hard_component = "Board Videos");
+			$this->get_html_info_remove($list_videos, $list_videos_cache, 
+				$connection, $hard_component = "Board Videos");
 			$sql = "TRUNCATE TABLE videos_cache;";
-			$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
+			$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT ID, HARDWARE_ID, NAME FROM videos;";
 			mysqli_multi_query($connection, $sql);
 		} elseif ($count_videos < $count_videos_cache) {
-				$this->get_html_general_information($list_videos, $list_videos_cache, 
-					$connection, $is_addition = false, $hard_component = "Board Videos");
+				$this->get_html_info_remove($list_videos, $list_videos_cache, 
+					$connection, $hard_component = "Board Videos");
+				$this->get_html_info_addition($list_videos, $list_videos_cache, 
+					$connection, $hard_component = "Board Videos");
 				$sql = "TRUNCATE TABLE videos_cache;";
-				$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT id, hardware_id, NAME FROM videos;";
+				$sql .= "REPLACE INTO videos_cache(ID, H_ID, NAME) SELECT ID, HARDWARE_ID, NAME FROM videos;";
 				mysqli_multi_query($connection, $sql);
 		}
 
