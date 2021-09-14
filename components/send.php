@@ -31,7 +31,7 @@ function Send_Email($html) {
 	$mail = new PHPMailer();
 
 	/* #########################
-	 * # CONFIGURAÇÕES BÁSICAS # 
+	 * 	Base Config
 	 * #########################
 	 */
 	$assunto = 'Teste de email de ativos';
