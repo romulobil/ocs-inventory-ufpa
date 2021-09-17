@@ -34,7 +34,7 @@ function Send_Email($html) {
 	 * 	Base Config
 	 * #########################
 	 */
-	$assunto = 'Teste de email de ativos';
+	$assunto = 'CTIC/CSIC - Monitoramento de Ativos';
 	$message = $html;
 	$usermail = $all_credentials['NOTIF_MAIL_ADMIN']['TVALUE'];
 	$username = $all_credentials['NOTIF_NAME_ADMIN']['TVALUE'];
@@ -100,10 +100,13 @@ function Send_Email($html) {
 	$mail->ClearAttachments();
 
 	/* Mostra se o email foi enviado ou não */
+	date_default_timezone_set("America/Belem");
 	if ($sended_mail) {
-		echo "Email has been send!";
+		$log_file = fopen(__DIR__ . '/log_file', 'a') or die('Unable to open the log file');
+		fwrite($log_file, date('d/m/Y -- H:i:s') . " | The email has been send sucessfully.\n");
+		fclose($log_file);
 	} else {
-		echo "Don't be possible send this mail.<br /><br />";
+		fwrite($log_file, date('d/m/Y == H:i:s') . " The email hasn't been send with sucess. Please contact the suport\n");
 		echo "<b>Error logs:</b> <br />" . $mail->ErrorInfo;
 	}
 
