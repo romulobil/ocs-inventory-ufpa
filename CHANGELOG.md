@@ -1,3 +1,17 @@
+# 1.0 - 2021-09-17
+## Changelog: Adicionado
+- Método get_html_info_addition() adicionado no código-fonte ComponentsNotification.php: Método que gera o html para os componentes 
+adicionados.
+- Método get_html_info_removed() adicionado no código-fonte ComponentsNotification.php:  Método que gera o html para os componentes
+removidos.
+- Função update_id_assets() Adicionado no código-fonte ComponentesNotification.php: Método que atualiza a tabela cache de UserID no banco de dados. 
+
+## Changelog: Modificado
+- Métodos refatorados: get_cpus(), get_memories(), get_monitors(), get_videos(), get_storages();
+- Método get_html_general_information modificado: Método desmambrado em dois.
+- Código-fonte send.php: adicionado trechos para a geração de um arquivo de log. Para registro no envio de e-mails.
+- Código-fonte cron_mailer.php: Adicionado a chamada de método update_id_assets(). 
+
 # 0.9 - 2021-08-31
 ## Changelog: Adicionado
 - Método get_cpus() no código-fonte ComponentsNotification.php
