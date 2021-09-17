@@ -60,7 +60,7 @@ class ComponentsNotification
 		}
 			$this->html_part_addition .= "</tr><tr>";
 		}
-		//$this->html_part_addition .= "<td style='text-align:center'>Total: " . count($list_hardware) . " " . $hard_component . "</td></tr>";
+		$this->html_part_addition .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($list_hardware) . " " . $hard_component . "</td></tr>";
 		$this->html_part_addition .= "</table></center><br>";
 	}
 	
@@ -109,11 +109,10 @@ class ComponentsNotification
 			}
 			$this->html_part_remove .= "</tr><tr>";
 		}
-		//$this->html_part_remove .= "<td style='text-align:center'>Total: " . count($hardware_cache) . " " . $hard_component . "</td></tr>";
+		$this->html_part_remove .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($hardware_cache) . " " . $hard_component . "</td></tr>";
 		$this->html_part_remove .= "</table></center><br>";
 			
 	}
-
 
 	public function get_cpus() {
 		$connection = db_connect();
@@ -141,15 +140,14 @@ class ComponentsNotification
 		
 		$added_cpus = array();
 		$removed_cpus = array();
-		
 		$added_cpus = array_diff_key($list_cpus, $list_cpus_cache);
 		if ($added_cpus != NULL) {
-			$this->get_html_info_addition($added_cpus, $connection, $hard_component = "Cpus");
+			$this->get_html_info_addition($added_cpus, $connection, $hard_component = "Cpu(s)");
 		}
 
 		$removed_cpus = array_diff_key($list_cpus_cache, $list_cpus);
 		if ($removed_cpus != NULL) {
-			$this->get_html_info_removed($removed_cpus, $connection, $hard_component = "Cpus");
+			$this->get_html_info_removed($removed_cpus, $connection, $hard_component = "Cpu(s)");
 		}
 
 		if ($added_cpus != NULL or $removed_cpus != NULL) {
@@ -191,13 +189,13 @@ class ComponentsNotification
 		$added_memories = array_diff_key($list_memories, $list_memories_cache);
 		
 		if ($added_memories != NULL) {
-			$this->get_html_info_addition($added_memories, $connection, $hard_component = "Memories");
+			$this->get_html_info_addition($added_memories, $connection, $hard_component = "Memory(ies)");
 		}
 		
 		$removed_memories = array_diff_key($list_memories_cache, $list_memories);	
 
 		if ($removed_memories != NULL) {
-			$this->get_html_info_removed($removed_memories, $connection, $hard_component = "Memories");
+			$this->get_html_info_removed($removed_memories, $connection, $hard_component = "Memory(ies)");
 		}
 
 		if ($added_memories != NULL or $removed_memories != NULL) {
@@ -238,12 +236,12 @@ class ComponentsNotification
 
 		$added_monitors = array_diff_key($list_monitors, $list_monitors_cache);
 		if ($added_monitors != NULL) {
-			$this->get_html_info_addition($added_monitors, $connection, $hard_component = "Monitors");
+			$this->get_html_info_addition($added_monitors, $connection, $hard_component = "Monitor(s)");
 		}
 		
 		$removed_monitors = array_diff_key($list_monitors_cache, $list_monitors);
 		if ($removed_monitors != NULL) {
-			$this->get_html_info_removed($removed_monitors, $connection, $hard_component = "Monitors");
+			$this->get_html_info_removed($removed_monitors, $connection, $hard_component = "Monitor(s)");
 		}
 		
 		if ($added_monitors != NULL or $removed_monitors != NULL)
@@ -286,12 +284,12 @@ class ComponentsNotification
 		
 		$added_storages = array_diff_key($list_storages, $list_storages_cache);
 		if ($added_storages != NULL) {
-			$this->get_html_info_addition($added_storages, $connection, $hard_component = "Storages");
+			$this->get_html_info_addition($added_storages, $connection, $hard_component = "Storage(s)");
 		}
 		
 		$removed_storages = array_diff_key($list_storages_cache, $list_storages);
 		if ($removed_storages != NULL) {
-			$this->get_html_info_removed($removed_storages, $connection, $hard_component = "Storages");
+			$this->get_html_info_removed($removed_storages, $connection, $hard_component = "Storage(s)");
 		}
 
 		if ($added_storages != NULL or $removed_storages != NULL) {
@@ -333,12 +331,12 @@ class ComponentsNotification
 		
 		$added_videos = array_diff_key($list_videos, $list_videos_cache);	
 		if ($added_videos != NULL) {
-			$this->get_html_info_addition($added_videos, $connection, $hard_component = "Videos");
+			$this->get_html_info_addition($added_videos, $connection, $hard_component = "B. Video(s)");
 		}
 		
 		$removed_videos = array_diff_key($list_videos_cache, $list_videos);	
 		if ($removed_videos != NULL) {
-			$this->get_html_info_removed($removed_videos, $connection, $hard_component = "Videos");
+			$this->get_html_info_removed($removed_videos, $connection, $hard_component = "B. Video(s)");
 		}
 
 		if ($added_videos != NULL or $removed_videos != NULL) {
