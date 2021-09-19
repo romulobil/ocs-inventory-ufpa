@@ -60,7 +60,7 @@ class ComponentsNotification
 		}
 			$this->html_part_addition .= "</tr><tr>";
 		}
-		$this->html_part_addition .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($list_hardware) . " " . $hard_component . "</td></tr>";
+		$this->html_part_addition .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($list_hardware) . "</td></tr>";
 		$this->html_part_addition .= "</table></center><br>";
 	}
 	
@@ -109,7 +109,7 @@ class ComponentsNotification
 			}
 			$this->html_part_remove .= "</tr><tr>";
 		}
-		$this->html_part_remove .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($hardware_cache) . " " . $hard_component . "</td></tr>";
+		$this->html_part_remove .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($hardware_cache) . "</td></tr>";
 		$this->html_part_remove .= "</table></center><br>";
 			
 	}
@@ -126,7 +126,6 @@ class ComponentsNotification
 			$list_cpus[$item_cpu['ID']]['ASSET'] = $item_cpu['HARDWARE_ID'];
 		}
 
-		$count_cpus = count($list_cpus);
 		$list_cpus_cache = array();
 		$sql = "SELECT * FROM cpus_cache";
 		$result_query = mysqli_query($connection, $sql);
@@ -136,8 +135,6 @@ class ComponentsNotification
 			$list_cpus_cache[$item_cpu['ID']]['ASSET'] = $item_cpu['H_ID'];
 		}
 
-		$count_cpus_cache = count($list_cpus_cache);
-		
 		$added_cpus = array();
 		$removed_cpus = array();
 		$added_cpus = array_diff_key($list_cpus, $list_cpus_cache);
@@ -157,8 +154,6 @@ class ComponentsNotification
 		}
 	}
 
-	
-	// Verifica as memórias presentes no banco de dados 
 	public function get_memories() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM memories";
@@ -167,21 +162,19 @@ class ComponentsNotification
 		$list_memories = array();
 		while ($item_memory = mysqli_fetch_array($result_memories)) {
 			$list_memories[$item_memory['ID']]['TYPE'] = $item_memory['TYPE'];
-			$list_memories[$item_memory['ID']]['CAPACITY'] = $item_memory['CAPACITY'];
+			$list_memories[$item_memory['ID']]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
 			$list_memories[$item_memory['ID']]['ASSET'] = $item_memory['HARDWARE_ID'];
 		}
 
-		$count_memories = count($list_memories);
 		$list_memories_cache = array();
 		$sql = "SELECT * FROM memories_cache";
 		$result_query = mysqli_query($connection, $sql);
 		while ($item_memory = mysqli_fetch_array($result_query)) {
 			$list_memories_cache[$item_memory['ID']]['TYPE'] = $item_memory['TYPE'];
-			$list_memories_cache[$item_memory['ID']]['CAPACITY'] = $item_memory['CAPACITY'];
+			$list_memories_cache[$item_memory['ID']]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
 			$list_memories_cache[$item_memory['ID']]['ASSET'] = $item_memory['H_ID'];
 		}
 
-		$count_memories_cache = count($list_memories_cache);
 		
 		$added_memories = array();
 		$removed_memories = array();
@@ -205,7 +198,6 @@ class ComponentsNotification
 		}
 	}
 
-	// Verifica os monitores presentes no banco de dados 
 	public function get_monitors() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM monitors";
@@ -218,8 +210,6 @@ class ComponentsNotification
 			$list_monitors[$item_monitors['ID']]['ASSET'] = $item_monitors['HARDWARE_ID'];		
 		}
 		
-		$count_monitors = count($list_monitors);
-		
 		$list_monitors_cache = array();
 		$sql = "SELECT * FROM monitors_cache";
 		$result_query = mysqli_query($connection, $sql);
@@ -228,8 +218,6 @@ class ComponentsNotification
 			$list_monitors_cache[$item_monitor['ID']]['DESCRIPTION'] = $item_monitor['DESCRIPTION'];		
 			$list_monitors_cache[$item_monitor['ID']]['ASSET'] = $item_monitor['H_ID'];		
 		}
-
-		$count_monitors_cache = count($list_monitors_cache);
 		
 		$added_monitors = array();
 		$removed_monitors = array();
@@ -250,56 +238,58 @@ class ComponentsNotification
 			mysqli_multi_query($connection, $sql);
 	}
 
-	// Verifica os disp. de armazenamento no banco de dados 
-	public function get_storages() {
+	// In this method has been used HARDWARE_ID as a key for array due 
+	// a particular conditions of database. I don't extend me
+	// because this explanation will be too much long. :)
+	public function get_disks() {
 		$connection = db_connect();
-		$sql = "SELECT * FROM storages";
-		$result_storages = mysqli_query($connection, $sql);
+		$sql = "SELECT * FROM drives";
+		$result_disks = mysqli_query($connection, $sql);
 		
-		$list_storages = array();
-		while ($item_storages = mysqli_fetch_array($result_storages)) {
-			$list_storages[$item_storages['ID']]['NAME'] = $item_storages['NAME'];
-			$list_storages[$item_storages['ID']]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
-			$list_storages[$item_storages['ID']]['DESCRIPTION'] = $item_storages['DESCRIPTION'];
-			$list_storages[$item_storages['ID']]['ASSET'] = $item_storages['HARDWARE_ID'];
+		$list_disks = array();
+		while ($item_disks = mysqli_fetch_array($result_disks)) {
+			$list_disks[$item_disks['HARDWARE_ID']]['TYPE'] = $item_disks['TYPE'];
+			$list_disks[$item_disks['HARDWARE_ID']]['FILESYS'] = $item_disks['FILESYSTEM'];
+			$list_disks[$item_disks['HARDWARE_ID']]['TOTAL (MB)'] = $item_disks['TOTAL'];
+			$list_disks[$item_disks['HARDWARE_ID']]['FREE (MB)'] = $item_disks['FREE'];
+			// Evaluate the disk usage
+			$list_disks[$item_disks['HARDWARE_ID']]['USED (%)'] = intval(((floatval($item_disks['TOTAL']) - 
+				floatval($item_disks['FREE'])) * 100) / $item_disks['TOTAL']);
+			$list_disks[$item_disks['HARDWARE_ID']]['ASSET'] = $item_disks['HARDWARE_ID'];
 		}
 		
-		$count_storages = count($list_storages);
-		
-		$sql = "SELECT * FROM storages_cache";
+		$sql = "SELECT * FROM drives_cache";
 		$result_query = mysqli_query($connection, $sql);
 		
-		$list_storages_cache = array();
-		while ($item_storages = mysqli_fetch_array($result_query)) {
-			$list_storages_cache[$item_storages['ID']]['NAME'] = $item_storages['NAME'];
-			$list_storages_cache[$item_storages['ID']]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
-			$list_storages_cache[$item_storages['ID']]['DESCRIPTION'] = $item_storages['DESCRIPTION'];
-			$list_storages_cache[$item_storages['ID']]['ASSET'] = $item_storages['H_ID'];
+		$list_disks_cache = array();
+		while ($item_disks = mysqli_fetch_array($result_query)) {
+			$list_disks_cache[$item_disks['H_ID']]['TYPE'] = $item_disks['TYPE'];
+			$list_disks_cache[$item_disks['H_ID']]['FILESYSTEM'] = $item_disks['FILESYSTEM'];
+			$list_disks_cache[$item_disks['H_ID']]['TOTAL (MB)'] = $item_disks['TOTAL'];
+			$list_disks_cache[$item_disks['H_ID']]['FREE (MB)'] = $item_disks['FREE'];
+			$list_disks_cache[$item_disks['H_ID']]['ASSET'] = $item_disks['H_ID'];
 		}
 		
-		$count_storages_cache = count($list_storages_cache);
-		
-		$added_storages = array();
-		$removed_storages = array();
-		
-		$added_storages = array_diff_key($list_storages, $list_storages_cache);
-		if ($added_storages != NULL) {
-			$this->get_html_info_addition($added_storages, $connection, $hard_component = "Storage(s)");
+		$added_disks = array();
+		$removed_disks = array();
+
+		$added_disks = array_diff_key($list_disks, $list_disks_cache);
+		if ($added_disks != NULL) {
+			$this->get_html_info_addition($added_disks, $connection, $hard_component = "Disk(s)");
 		}
 		
-		$removed_storages = array_diff_key($list_storages_cache, $list_storages);
-		if ($removed_storages != NULL) {
-			$this->get_html_info_removed($removed_storages, $connection, $hard_component = "Storage(s)");
+		$removed_disks = array_diff_key($list_disks_cache, $list_disks);
+		if ($removed_disks != NULL) {
+			$this->get_html_info_removed($removed_disks, $connection, $hard_component = "Disk(s)");
 		}
 
-		if ($added_storages != NULL or $removed_storages != NULL) {
-			$sql = "TRUNCATE TABLE storages_cache;";
-			$sql .= "REPLACE INTO storages_cache(ID, H_ID, NAME, DESCRIPTION, MANUFACTURER) SELECT ID, HARDWARE_ID, NAME, DESCRIPTION, MANUFACTURER FROM storages;";
+		if ($added_disks != NULL or $removed_disks != NULL) {
+			$sql = "TRUNCATE TABLE drives_cache;";
+			$sql .= "REPLACE INTO drives_cache(ID, H_ID, TYPE, TOTAL, FREE, FILESYSTEM) SELECT ID, HARDWARE_ID, TYPE, TOTAL, FREE, FILESYSTEM FROM drives;";
 			mysqli_multi_query($connection, $sql);
 		}
 	}
 
-	// Verifica as placas de video presentes no banco de dados
 	public function get_videos() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM videos";
@@ -311,8 +301,6 @@ class ComponentsNotification
 			$list_videos[$item_videos['ID']]['MEMORY'] = $item_videos['MEMORY'];		
 			$list_videos[$item_videos['ID']]['ASSET'] = $item_videos['HARDWARE_ID'];		
 		}
-	
-		$count_videos = count($list_videos);
 		
 		$sql = "SELECT * FROM videos_cache";
 		$result_query = mysqli_query($connection, $sql);
@@ -323,15 +311,13 @@ class ComponentsNotification
 			$list_videos_cache[$item_videos['ID']]['MEMORY'] = $item_videos['MEMORY'];		
 			$list_videos_cache[$item_videos['ID']]['ASSET'] = $item_videos['H_ID'];		
 		}
-	
-		$count_videos_cache = count($list_videos_cache);
 		
 		$added_videos = array();
 		$removed_videos = array();
 		
 		$added_videos = array_diff_key($list_videos, $list_videos_cache);	
 		if ($added_videos != NULL) {
-			$this->get_html_info_addition($added_videos, $connection, $hard_component = "B. Video(s)");
+			$this->get_html_info_addition($added_videos, $connection, $hard_component = "C. Video(s)");
 		}
 		
 		$removed_videos = array_diff_key($list_videos_cache, $list_videos);	
