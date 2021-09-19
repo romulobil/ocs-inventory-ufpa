@@ -322,7 +322,7 @@ class ComponentsNotification
 		
 		$removed_videos = array_diff_key($list_videos_cache, $list_videos);	
 		if ($removed_videos != NULL) {
-			$this->get_html_info_removed($removed_videos, $connection, $hard_component = "B. Video(s)");
+			$this->get_html_info_removed($removed_videos, $connection, $hard_component = "C. Video(s)");
 		}
 
 		if ($added_videos != NULL or $removed_videos != NULL) {
