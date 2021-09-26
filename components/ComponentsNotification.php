@@ -1,5 +1,18 @@
 <?php
 
+function filter_array_cells($array) {
+	foreach(array_keys($array) as $array_key) {
+		foreach($array[$array_key] as $key => $value) {
+			if ($value == NULL or $value == '') {
+				unset($array[$array_key]);
+			}
+		}
+	} 	
+
+	return $array;
+}
+
+
 function db_connect() {
 	require_once __DIR__ . "/../../var.php";
 	require_once(CONF_MYSQL);
@@ -38,14 +51,15 @@ class ComponentsNotification
 		$this->html_part_addition .= "</tr>\n<tr>";
 	
 		$id_asset = NULL; 
-		for ($i = $reference_array; $i <= array_key_last($list_hardware); $i++) {
-			foreach ($list_hardware["$i"] as $feature => $value) {
+		// for ($i = $reference_array; $i <= array_key_last($list_hardware); $i++) {
+		foreach (array_keys($list_hardware) as $key) {
+			foreach ($list_hardware["$key"] as $feature => $value) {
 				if ($value == 'Unknown' or $value == '') { 
 					$this->html_part_addition .= "<td style='text-align:center'> Uninformed </td>\n";
 					continue;
 				}
 				if ($feature == "ASSET") {
-					$sql = "SELECT USERID FROM hardware WHERE ID = '$value'";
+					$sql = "SELECT USERID FROM hardware WHERE ID =" . trim($value);
 					$result_id = mysqli_query($connection, $sql);
 					$id_asset = mysqli_fetch_array($result_id);
 
@@ -87,14 +101,15 @@ class ComponentsNotification
 		$this->html_part_remove .= "</tr>\n<tr>";
 
 		$id_asset = NULL;
-		for ($i = $reference_array; $i <= array_key_last($hardware_cache); $i++) {
-			foreach ($hardware_cache["$i"] as $feature => $value) {
+		//for ($i = $reference_array; $i <= array_key_last($hardware_cache); $i++) {
+		foreach (array_keys($hardware_cache) as $key) {
+			foreach ($hardware_cache["$key"] as $feature => $value) {
 				if ($value == 'Unknown' or $value == '') {
 					$this->html_part_remove .= "<td style='text-align:center'> Uninformed </td>\n";
 					continue;
 				}
 				if ($feature == "ASSET") {
-					$sql = "SELECT USERID FROM id_assets_cache WHERE ID = '$value'";
+					$sql = "SELECT USERID FROM id_assets_cache WHERE ID" . trim($value);
 					$result_id = mysqli_query($connection, $sql);
 					$id_asset = mysqli_fetch_array($result_id);
 
@@ -120,19 +135,32 @@ class ComponentsNotification
 		$result_cpus = mysqli_query($connection, $sql);
 		
 		$list_cpus = array();
+		$i = 1;
 		while ($item_cpu = mysqli_fetch_array($result_cpus)) {
-			$list_cpus[$item_cpu['ID']]['MANUFACTURER'] = $item_cpu['MANUFACTURER'];
-			$list_cpus[$item_cpu['ID']]['TYPE'] = $item_cpu['TYPE'];
-			$list_cpus[$item_cpu['ID']]['ASSET'] = $item_cpu['HARDWARE_ID'];
+			if (array_key_exists($item_cpu['HARDWARE_ID'], $list_cpus)){
+				$array_key = $item_cpu['HARDWARE_ID'] . str_repeat('*', $i++);
+			} else {
+				$array_key = $item_cpu['HARDWARE_ID'];
+			}
+				$list_cpus[$array_key]['MANUFACTURER'] = $item_cpu['MANUFACTURER'];
+				$list_cpus[$array_key]['TYPE'] = $item_cpu['TYPE'];
+				$list_cpus[$array_key]['ASSET'] = $item_cpu['HARDWARE_ID'];
 		}
 
 		$list_cpus_cache = array();
 		$sql = "SELECT * FROM cpus_cache";
 		$result_query = mysqli_query($connection, $sql);
+		
+		$i = 1;
 		while ($item_cpu = mysqli_fetch_array($result_query)) {
-			$list_cpus_cache[$item_cpu['ID']]['MANUFACTURER'] = $item_cpu['MANUFACTURER'];
-			$list_cpus_cache[$item_cpu['ID']]['TYPE'] = $item_cpu['TYPE'];
-			$list_cpus_cache[$item_cpu['ID']]['ASSET'] = $item_cpu['H_ID'];
+			if (array_key_exists($item_cpu['H_ID'], $list_cpus_cache)) {
+				$array_key = $item_cpu['H_ID'] . str_repeat('*', $i++);
+			} else {
+				$array_key = $item_cpu['H_ID'];
+			}
+			$list_cpus_cache[$array_key]['MANUFACTURER'] = $item_cpu['MANUFACTURER'];
+			$list_cpus_cache[$array_key]['TYPE'] = $item_cpu['TYPE'];
+			$list_cpus_cache[$array_key]['ASSET'] = $item_cpu['H_ID'];
 		}
 
 		$added_cpus = array();
@@ -160,19 +188,31 @@ class ComponentsNotification
 		$result_memories = mysqli_query($connection, $sql);
 		
 		$list_memories = array();
+		$i = 0;
 		while ($item_memory = mysqli_fetch_array($result_memories)) {
-			$list_memories[$item_memory['ID']]['TYPE'] = $item_memory['TYPE'];
-			$list_memories[$item_memory['ID']]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
-			$list_memories[$item_memory['ID']]['ASSET'] = $item_memory['HARDWARE_ID'];
+			if (array_key_exists($item_memory['HARDWARE_ID'], $list_memories)){
+				$array_key = $item_memory['HARDWARE_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_memory['HARDWARE_ID'];
+			}
+			$list_memories[$array_key]['TYPE'] = $item_memory['TYPE'];
+			$list_memories[$array_key]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
+			$list_memories[$array_key]['ASSET'] = $item_memory['HARDWARE_ID'];
 		}
 
+		$i = 0;
 		$list_memories_cache = array();
 		$sql = "SELECT * FROM memories_cache";
 		$result_query = mysqli_query($connection, $sql);
 		while ($item_memory = mysqli_fetch_array($result_query)) {
-			$list_memories_cache[$item_memory['ID']]['TYPE'] = $item_memory['TYPE'];
-			$list_memories_cache[$item_memory['ID']]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
-			$list_memories_cache[$item_memory['ID']]['ASSET'] = $item_memory['H_ID'];
+			if (array_key_exists($item_memory['H_ID'], $list_memories_cache)) {
+				$array_key = $item_memory['H_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_memory['H_ID'];
+			}
+			$list_memories_cache[$array_key]['TYPE'] = $item_memory['TYPE'];
+			$list_memories_cache[$array_key]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
+			$list_memories_cache[$array_key]['ASSET'] = $item_memory['H_ID'];
 		}
 
 		
@@ -182,12 +222,14 @@ class ComponentsNotification
 		$added_memories = array_diff_key($list_memories, $list_memories_cache);
 		
 		if ($added_memories != NULL) {
+			$added_memories = filter_array_cells($added_memories);
 			$this->get_html_info_addition($added_memories, $connection, $hard_component = "Memory(ies)");
 		}
 		
 		$removed_memories = array_diff_key($list_memories_cache, $list_memories);	
 
 		if ($removed_memories != NULL) {
+			$removed_memories = filter_array_cells($removed_memories);
 			$this->get_html_info_removed($removed_memories, $connection, $hard_component = "Memory(ies)");
 		}
 
@@ -201,22 +243,37 @@ class ComponentsNotification
 	public function get_monitors() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM monitors";
-		$result_monitors = mysqli_query($connection, $sql);
+		$result_monitor = mysqli_query($connection, $sql);
 		
 		$list_monitors = array();
-		while($item_monitors = mysqli_fetch_array($result_monitors)) {
-			$list_monitors[$item_monitors['ID']]['MANUFACTURER'] = $item_monitors['MANUFACTURER'];		
-			$list_monitors[$item_monitors['ID']]['DESCRIPTION'] = $item_monitors['DESCRIPTION'];		
-			$list_monitors[$item_monitors['ID']]['ASSET'] = $item_monitors['HARDWARE_ID'];		
+		$i = 0;
+		while($item_monitor = mysqli_fetch_array($result_monitor)) {
+			if (array_key_exists($item_monitor['HARDWARE_ID'], $list_monitors)) {
+				$array_key = $item_monitor['HARDWARE_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_monitor['HARDWARE_ID'];
+			}
+			
+			$list_monitors[$array_key]['MANUFACTURER'] = $item_monitor['MANUFACTURER'];		
+			$list_monitors[$array_key]['DESCRIPTION'] = $item_monitor['DESCRIPTION'];		
+			$list_monitors[$array_key]['ASSET'] = $item_monitor['HARDWARE_ID'];		
 		}
 		
-		$list_monitors_cache = array();
 		$sql = "SELECT * FROM monitors_cache";
 		$result_query = mysqli_query($connection, $sql);
+
+		$list_monitors_cache = array();
+		$i = 0;
 		while ($item_monitor = mysqli_fetch_array($result_query)) {
-			$list_monitors_cache[$item_monitor['ID']]['MANUFACTURER'] = $item_monitor['MANUFACTURER'];
-			$list_monitors_cache[$item_monitor['ID']]['DESCRIPTION'] = $item_monitor['DESCRIPTION'];		
-			$list_monitors_cache[$item_monitor['ID']]['ASSET'] = $item_monitor['H_ID'];		
+			if (array_key_exists($item_monitor['H_ID'], $list_monitors_cache)) {
+				$array_key = $item_monitor['H_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_monitor['H_ID'];
+			}
+			
+			$list_monitors_cache[$array_key]['MANUFACTURER'] = $item_monitor['MANUFACTURER'];
+			$list_monitors_cache[$array_key]['DESCRIPTION'] = $item_monitor['DESCRIPTION'];		
+			$list_monitors_cache[$array_key]['ASSET'] = $item_monitor['H_ID'];		
 		}
 		
 		$added_monitors = array();
@@ -238,36 +295,52 @@ class ComponentsNotification
 			mysqli_multi_query($connection, $sql);
 	}
 
-	// In this method has been used HARDWARE_ID as a key for array due 
-	// a particular conditions of database. I don't extend me
-	// because this explanation will be too much long. :)
 	public function get_disks() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM drives";
 		$result_disks = mysqli_query($connection, $sql);
 		
 		$list_disks = array();
+		$i = 1;
 		while ($item_disks = mysqli_fetch_array($result_disks)) {
-			$list_disks[$item_disks['HARDWARE_ID']]['TYPE'] = $item_disks['TYPE'];
-			$list_disks[$item_disks['HARDWARE_ID']]['FILESYS'] = $item_disks['FILESYSTEM'];
-			$list_disks[$item_disks['HARDWARE_ID']]['TOTAL (MB)'] = $item_disks['TOTAL'];
-			$list_disks[$item_disks['HARDWARE_ID']]['FREE (MB)'] = $item_disks['FREE'];
+			if ($item_disks['TOTAL'] < 16000) {
+				continue;
+			}
+			if (array_key_exists($item_disks['HARDWARE_ID'], $list_disks)) {
+				$array_key = $item_disks['HARDWARE_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_disks['HARDWARE_ID'];
+			}
+
+			$list_disks[$array_key]['TYPE'] = $item_disks['TYPE'];
+			$list_disks[$array_key]['FILESYS'] = $item_disks['FILESYSTEM'];
+			$list_disks[$array_key]['TOTAL (MB)'] = $item_disks['TOTAL'];
+			$list_disks[$array_key]['FREE (MB)'] = $item_disks['FREE'];
 			// Evaluate the disk usage
-			$list_disks[$item_disks['HARDWARE_ID']]['USED (%)'] = intval(((floatval($item_disks['TOTAL']) - 
+			$list_disks[$array_key]['USED (%)'] = intval(((floatval($item_disks['TOTAL']) - 
 				floatval($item_disks['FREE'])) * 100) / $item_disks['TOTAL']);
-			$list_disks[$item_disks['HARDWARE_ID']]['ASSET'] = $item_disks['HARDWARE_ID'];
+			$list_disks[$array_key]['ASSET'] = $item_disks['HARDWARE_ID'];
 		}
 		
 		$sql = "SELECT * FROM drives_cache";
 		$result_query = mysqli_query($connection, $sql);
 		
 		$list_disks_cache = array();
+		$i = 1;
 		while ($item_disks = mysqli_fetch_array($result_query)) {
-			$list_disks_cache[$item_disks['H_ID']]['TYPE'] = $item_disks['TYPE'];
-			$list_disks_cache[$item_disks['H_ID']]['FILESYSTEM'] = $item_disks['FILESYSTEM'];
-			$list_disks_cache[$item_disks['H_ID']]['TOTAL (MB)'] = $item_disks['TOTAL'];
-			$list_disks_cache[$item_disks['H_ID']]['FREE (MB)'] = $item_disks['FREE'];
-			$list_disks_cache[$item_disks['H_ID']]['ASSET'] = $item_disks['H_ID'];
+			if ($item_disks['TOTAL'] < 16000) {
+				continue;
+			}
+			if (array_key_exists($item_disks['H_ID'], $list_disks_cache)) {
+				$array_key = $item_disks['H_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_disks['H_ID'];
+			}
+			$list_disks_cache[$array_key]['TYPE'] = $item_disks['TYPE'];
+			$list_disks_cache[$array_key]['FILESYSTEM'] = $item_disks['FILESYSTEM'];
+			$list_disks_cache[$array_key]['TOTAL (MB)'] = $item_disks['TOTAL'];
+			$list_disks_cache[$array_key]['FREE (MB)'] = $item_disks['FREE'];
+			$list_disks_cache[$array_key]['ASSET'] = $item_disks['H_ID'];
 		}
 		
 		$added_disks = array();
@@ -296,20 +369,34 @@ class ComponentsNotification
 		$result_videos = mysqli_query($connection, $sql);
 
 		$list_videos = array();
+		$i = 1;
+		$array_key = NULL;
 		while($item_videos = mysqli_fetch_array($result_videos)) {
-			$list_videos[$item_videos['ID']]['NAME'] = $item_videos['NAME'];		
-			$list_videos[$item_videos['ID']]['MEMORY'] = $item_videos['MEMORY'];		
-			$list_videos[$item_videos['ID']]['ASSET'] = $item_videos['HARDWARE_ID'];		
+			if (array_key_exists($item_videos['HARDWARE_ID'], $list_videos)) {
+				$array_key = $item_videos['HARDWARE_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_videos['HARDWARE_ID'];
+			}
+			$list_videos[$array_key]['NAME'] = $item_videos['NAME'];		
+			$list_videos[$array_key]['MEMORY'] = $item_videos['MEMORY'];		
+			$list_videos[$array_key]['ASSET'] = $item_videos['HARDWARE_ID'];		
+	
 		}
-		
 		$sql = "SELECT * FROM videos_cache";
 		$result_query = mysqli_query($connection, $sql);
 
 		$list_videos_cache = array();
+		$i = 1;
 		while($item_videos = mysqli_fetch_array($result_query)) {
-			$list_videos_cache[$item_videos['ID']]['NAME'] = $item_videos['NAME'];		
-			$list_videos_cache[$item_videos['ID']]['MEMORY'] = $item_videos['MEMORY'];		
-			$list_videos_cache[$item_videos['ID']]['ASSET'] = $item_videos['H_ID'];		
+			if (array_key_exists($item_videos['H_ID'], $list_videos_cache)) {
+				$array_key = $item_videos['H_ID'] . str_repeat("*", $i++);
+			} else {
+				$array_key = $item_videos['H_ID'];
+			}	
+			
+			$list_videos_cache[$array_key]['NAME'] = $item_videos['NAME'];		
+			$list_videos_cache[$array_key]['MEMORY'] = $item_videos['MEMORY'];		
+			$list_videos_cache[$array_key]['ASSET'] = $item_videos['H_ID'];		
 		}
 		
 		$added_videos = array();
