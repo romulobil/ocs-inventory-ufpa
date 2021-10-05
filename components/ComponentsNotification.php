@@ -295,70 +295,66 @@ class ComponentsNotification
 			mysqli_multi_query($connection, $sql);
 	}
 
-	public function get_disks() {
+	public function get_storages() {
 		$connection = db_connect();
-		$sql = "SELECT * FROM drives";
-		$result_disks = mysqli_query($connection, $sql);
+		$sql = "SELECT * FROM storages";
+		$result_storages = mysqli_query($connection, $sql);
 		
-		$list_disks = array();
+		$list_storages = array();
 		$i = 1;
-		while ($item_disks = mysqli_fetch_array($result_disks)) {
-			if ($item_disks['TOTAL'] < 16000) {
+		while ($item_storages = mysqli_fetch_array($result_storages)) {
+			if ($item_storages['DISKSIZE'] < 16000) {
 				continue;
 			}
-			if (array_key_exists($item_disks['HARDWARE_ID'], $list_disks)) {
-				$array_key = $item_disks['HARDWARE_ID'] . str_repeat("*", $i++);
+			if (array_key_exists($item_storages['HARDWARE_ID'], $list_storages)) {
+				$array_key = $item_storages['HARDWARE_ID'] . str_repeat("*", $i++);
 			} else {
-				$array_key = $item_disks['HARDWARE_ID'];
+				$array_key = $item_storages['HARDWARE_ID'];
 			}
 
-			$list_disks[$array_key]['TYPE'] = $item_disks['TYPE'];
-			$list_disks[$array_key]['FILESYS'] = $item_disks['FILESYSTEM'];
-			$list_disks[$array_key]['TOTAL (MB)'] = $item_disks['TOTAL'];
-			$list_disks[$array_key]['FREE (MB)'] = $item_disks['FREE'];
-			// Evaluate the disk usage
-			$list_disks[$array_key]['USED (%)'] = intval(((floatval($item_disks['TOTAL']) - 
-				floatval($item_disks['FREE'])) * 100) / $item_disks['TOTAL']);
-			$list_disks[$array_key]['ASSET'] = $item_disks['HARDWARE_ID'];
+			$list_storages[$array_key]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
+			$list_storages[$array_key]['DISKSIZE (MB)'] = $item_storages['DISKSIZE'];
+			$list_storages[$array_key]['MODEL'] = $item_storages['MODEL'];
+			$list_storages[$array_key]['ASSET'] = $item_storages['HARDWARE_ID'];
 		}
 		
-		$sql = "SELECT * FROM drives_cache";
+		$sql = "SELECT * FROM storages_cache";
 		$result_query = mysqli_query($connection, $sql);
 		
-		$list_disks_cache = array();
+		$list_storages_cache = array();
 		$i = 1;
-		while ($item_disks = mysqli_fetch_array($result_query)) {
-			if ($item_disks['TOTAL'] < 16000) {
+		while ($item_storages = mysqli_fetch_array($result_query)) {
+			if ($item_storages['DISKSIZE'] < 16000) {
 				continue;
 			}
-			if (array_key_exists($item_disks['H_ID'], $list_disks_cache)) {
-				$array_key = $item_disks['H_ID'] . str_repeat("*", $i++);
+			if (array_key_exists($item_storages['H_ID'], $list_storages_cache)) {
+				$array_key = $item_storages['H_ID'] . str_repeat("*", $i++);
 			} else {
-				$array_key = $item_disks['H_ID'];
+				$array_key = $item_storages['H_ID'];
 			}
-			$list_disks_cache[$array_key]['TYPE'] = $item_disks['TYPE'];
-			$list_disks_cache[$array_key]['FILESYSTEM'] = $item_disks['FILESYSTEM'];
-			$list_disks_cache[$array_key]['TOTAL (MB)'] = $item_disks['TOTAL'];
-			$list_disks_cache[$array_key]['FREE (MB)'] = $item_disks['FREE'];
-			$list_disks_cache[$array_key]['ASSET'] = $item_disks['H_ID'];
+
+			$list_storages_cache[$array_key]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
+			$list_storages_cache[$array_key]['DISKSIZE (MB)'] = $item_storages['DISKSIZE'];
+			$list_storages_cache[$array_key]['MODEL'] = $item_storages['MODEL'];
+			$list_storages_cache[$array_key]['ASSET'] = $item_storages['HARDWARE_ID'];
 		}
 		
-		$added_disks = array();
-		$removed_disks = array();
+		$added_storages = array();
+		$removed_storages = array();
 
-		$added_disks = array_diff_key($list_disks, $list_disks_cache);
-		if ($added_disks != NULL) {
-			$this->get_html_info_addition($added_disks, $connection, $hard_component = "Disk(s)");
+		$added_storages = array_diff_key($list_storages, $list_storages_cache);
+		if ($added_storages != NULL) {
+			$this->get_html_info_addition($added_storages, $connection, $hard_component = "Storage(s)");
 		}
 		
-		$removed_disks = array_diff_key($list_disks_cache, $list_disks);
-		if ($removed_disks != NULL) {
-			$this->get_html_info_removed($removed_disks, $connection, $hard_component = "Disk(s)");
+		$removed_storages = array_diff_key($list_storages_cache, $list_storages);
+		if ($removed_storages != NULL) {
+			$this->get_html_info_removed($removed_storages, $connection, $hard_component = "Storage(s)");
 		}
 
-		if ($added_disks != NULL or $removed_disks != NULL) {
-			$sql = "TRUNCATE TABLE drives_cache;";
-			$sql .= "REPLACE INTO drives_cache(ID, H_ID, TYPE, TOTAL, FREE, FILESYSTEM) SELECT ID, HARDWARE_ID, TYPE, TOTAL, FREE, FILESYSTEM FROM drives;";
+		if ($added_storages != NULL or $removed_storages != NULL) {
+			$sql = "TRUNCATE TABLE storages_cache;";
+			$sql .= "REPLACE INTO storages_cache(ID, H_ID, MANUFACTURER, DISKSIZE, MODEL) SELECT ID, HARDWARE_ID, MANUFACTURER, DISKSIZE, MODEL FROM storages;";
 			mysqli_multi_query($connection, $sql);
 		}
 	}
@@ -382,6 +378,7 @@ class ComponentsNotification
 			$list_videos[$array_key]['ASSET'] = $item_videos['HARDWARE_ID'];		
 	
 		}
+
 		$sql = "SELECT * FROM videos_cache";
 		$result_query = mysqli_query($connection, $sql);
 
