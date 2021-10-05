@@ -9,7 +9,7 @@ require_once __DIR__ . '/send.php';
 	$mastermind->get_memories();
 	$mastermind->get_monitors();
 	$mastermind->get_videos();
-	$mastermind->get_disks();	
+	$mastermind->get_storages();	
 	$mastermind->get_cpus();	
 	$mastermind->update_id_assets();
 	// html_part_addition e html_part_remove são partes integrantes de ComponentsNotification
