@@ -101,8 +101,8 @@ function Send_Email($html) {
 
 	/* Mostra se o email foi enviado ou não */
 	date_default_timezone_set("America/Belem");
+	$log_file = fopen(__DIR__ . '/log_file', 'a') or die('Unable to open the log file');
 	if ($sended_mail) {
-		$log_file = fopen(__DIR__ . '/log_file', 'a') or die('Unable to open the log file');
 		fwrite($log_file, date('d/m/Y -- H:i:s') . " | The email has been send sucessfully.\n");
 		fclose($log_file);
 	} else {
