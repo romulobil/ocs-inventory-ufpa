@@ -1,9 +1,19 @@
+# 1.1 - 2021-10-10
+## Changelog: Adicionado
+- Método get_storages() adicionado novamente.
+- Bug Fixes
+
+## Changelog: Removido
+- Método get_disks() removido.
+
+
 # 1.0 - 2021-09-17
 ## Changelog: Adicionado
 - Método get_html_info_addition() adicionado no código-fonte ComponentsNotification.php: Método que gera o html para os componentes 
 adicionados.
 - Método get_html_info_removed() adicionado no código-fonte ComponentsNotification.php:  Método que gera o html para os componentes
 removidos.
+- Método get_disks().
 - Função update_id_assets() Adicionado no código-fonte ComponentesNotification.php: Método que atualiza a tabela cache de UserID no banco de dados. 
 
 ## Changelog: Modificado
