@@ -1,5 +1,6 @@
 # 1.1 - 2021-10-10
 ## Changelog: Adicionado
+- Função filter_array_cells().
 - Método get_storages() adicionado novamente.
 - Bug Fixes
 
