@@ -30,32 +30,36 @@ class ComponentsNotification
 	public $html_part_remove;
 
 	public function get_html_info_addition($list_hardware, $connection, $hard_component) {
+		$count_line = 0;
 		if ($this->html_part_addition == '') {
 				$this->html_part_addition .= "
+				 " .  file_get_contents(__DIR__ . '/html_css_part.html') . "
 				<hr>
 				<center>
 					<h1> New Hardware Components Has been Added <h1>
 				</center>
 				<hr>";
 		}
+		//<table border='collapse' bgcolor='B8B0AE'>
 		$this->html_part_addition .= "
-				<br><center>
-				<h2> $hard_component <h2>	
-				<table border='collapse' bgcolor='B8B0AE'>
-				<tr>\n";
+				<br>
+				<table class='tabelaRelatorio' width='100%'>
+				<caption> $hard_component <caption>
+				<tr><thead>\n";
 
 		$reference_array = array_key_first($list_hardware);
 			foreach ($list_hardware[$reference_array] as $label => $value) {
-				$this->html_part_addition .= "<th>$label</th>\n";
+				$this->html_part_addition .= "<th class='nota'>$label</th>\n";
 			} 
-		$this->html_part_addition .= "</tr>\n<tr>";
+		$this->html_part_addition .= "</tr></thead>\n<tbody><tr class='linhaPar linha'>";
 	
 		$id_asset = NULL; 
 		// for ($i = $reference_array; $i <= array_key_last($list_hardware); $i++) {
 		foreach (array_keys($list_hardware) as $key) {
 			foreach ($list_hardware["$key"] as $feature => $value) {
+				$count_line++;
 				if ($value == 'Unknown' or $value == '') { 
-					$this->html_part_addition .= "<td style='text-align:center'> Uninformed </td>\n";
+					$this->html_part_addition .= "<td class='nota' nowrap='nowrap'> Uninformed </td>\n";
 					continue;
 				}
 				if ($feature == "ASSET") {
@@ -64,24 +68,25 @@ class ComponentsNotification
 					$id_asset = mysqli_fetch_array($result_id);
 
 					if (isset($id_asset)) {	
-						$this->html_part_addition .= "<td style='text-align:center'>" . $id_asset['USERID'] . "</td><td bgcolor='green' style='text-align:center'> Added </td>\n";
+						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'>" . $id_asset['USERID'] . "</td><td class='nota' bgcolor='green'> Added </td>\n";
 					} else {
-						$this->html_part_addition .= "<td style='text-align:center'> Not Found </td><td bgcolor='green' style='text-align:center'> Added </td>\n";
+						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota' bgcolor='green'> Added </td>\n";
 					}
 				} else {
-					$this->html_part_addition .= "<td style='text-align:center'>$value</td>\n";
+					$this->html_part_addition .= "<td class='nota'>$value</td>\n";
 				}
+		} 
+			$this->html_part_addition .= "</tr><tr class='linhaPar linha'>";
 		}
-			$this->html_part_addition .= "</tr><tr>";
-		}
-		$this->html_part_addition .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($list_hardware) . "</td></tr>";
-		$this->html_part_addition .= "</table></center><br>";
+		$this->html_part_addition .= "<td class='nota' nowrap='nowrap' bgcolor='#4169e1'>Total: " . count($list_hardware) . "</td></tr>";
+		$this->html_part_addition .= "</table></tbody><br>";
 	}
 	
 	public function get_html_info_removed($hardware_cache, $connection, $hard_component) {
+		$count_line = 0;
 		if ($this->html_part_remove == '') {
 				$this->html_part_remove .= "
-					<br>
+				" . file_get_contents(__DIR__ . '/html_css_part.html') ."
 					<hr>
 					<center>
 						<h1> Hardware Components has been Removed <h1>
@@ -89,43 +94,42 @@ class ComponentsNotification
 					<hr>";
 		}
 		$this->html_part_remove .= "
-				<br><center>
-					<h2> $hard_component <h2>	
-					<table border='1' bgcolor='B8B0AE'>
-					<tr>\n";
-		$critical_situation = 0;	
+				<br>
+					<table class='tabelaRelatorio' width='100%'>
+					<caption> $hard_component <caption>	
+					<tr><thead>\n";
 		$reference_array = array_key_first($hardware_cache);
 		foreach ($hardware_cache[$reference_array] as $label => $value) {
-			$this->html_part_remove .= "<th>$label</th>\n";
+			$this->html_part_remove .= "<th class='nota'>$label</th>\n";
 		}
-		$this->html_part_remove .= "</tr>\n<tr>";
+		$this->html_part_remove .= "</tr>\n</thead><tbody><tr class='linhaPar linha'>";
 
 		$id_asset = NULL;
-		//for ($i = $reference_array; $i <= array_key_last($hardware_cache); $i++) {
 		foreach (array_keys($hardware_cache) as $key) {
 			foreach ($hardware_cache["$key"] as $feature => $value) {
+				$count_line++;
 				if ($value == 'Unknown' or $value == '') {
-					$this->html_part_remove .= "<td style='text-align:center'> Uninformed </td>\n";
+					$this->html_part_remove .= "<td class='nota' nowrap='nowrap'> Uninformed </td>\n";
 					continue;
 				}
 				if ($feature == "ASSET") {
-					$sql = "SELECT USERID FROM id_assets_cache WHERE ID" . trim($value);
+					$sql = "SELECT USERID FROM id_assets_cache WHERE ID = " . trim($value);
 					$result_id = mysqli_query($connection, $sql);
 					$id_asset = mysqli_fetch_array($result_id);
-
 					if (isset($id_asset)) {
-						$this->html_part_remove .= "<td style='text-align:center'>" . $id_asset['USERID'] . "</td><td bgcolor='#e31111' style='text-align:center'> Removed </td>\n";
+						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'>" . $id_asset['USERID'] . "</td><td class='nota' bgcolor='#e31111'> Removed </td>\n";
 					} else {
-						$this->html_part_remove .= "<td style='text-align:center'> Not Found </td><td bgcolor='#e31111' style='text-align:center'> Removed </td>\n";
+						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota' bgcolor='#e31111' nowrap='nowrap'> Removed </td>\n";
 					}
 				} else {
-					$this->html_part_remove .= "<td style='text-align:center'>$value</td>\n";
+					$this->html_part_remove .= "<td class='nota' nowrap='nowrap'>$value</td>\n";
 				}
 			}
-			$this->html_part_remove .= "</tr><tr>";
+
+			$this->html_part_remove .= "</tr><tr class='linhaPar linha'>";
 		}
-		$this->html_part_remove .= "<td bgcolor='#4169e1' style='text-align:center'>Total: " . count($hardware_cache) . "</td></tr>";
-		$this->html_part_remove .= "</table></center><br>";
+		$this->html_part_remove .= "<td class='nota' bgcolor='#4169e1' nowrap='nowrap'>Total: " . count($hardware_cache) . "</td></tr>";
+		$this->html_part_remove .= "</table></tbody><br>";
 			
 	}
 
@@ -135,12 +139,13 @@ class ComponentsNotification
 		$result_cpus = mysqli_query($connection, $sql);
 		
 		$list_cpus = array();
-		$i = 1;
+		$asterix_amount = 0;
 		while ($item_cpu = mysqli_fetch_array($result_cpus)) {
 			if (array_key_exists($item_cpu['HARDWARE_ID'], $list_cpus)){
-				$array_key = $item_cpu['HARDWARE_ID'] . str_repeat('*', $i++);
+				$array_key = $item_cpu['HARDWARE_ID'] . str_repeat('*', ++$asterix_amount);
 			} else {
 				$array_key = $item_cpu['HARDWARE_ID'];
+				$asterix_amount = 0;
 			}
 				$list_cpus[$array_key]['MANUFACTURER'] = $item_cpu['MANUFACTURER'];
 				$list_cpus[$array_key]['TYPE'] = $item_cpu['TYPE'];
@@ -151,12 +156,13 @@ class ComponentsNotification
 		$sql = "SELECT * FROM cpus_cache";
 		$result_query = mysqli_query($connection, $sql);
 		
-		$i = 1;
+		$asterix_amount = 0;
 		while ($item_cpu = mysqli_fetch_array($result_query)) {
 			if (array_key_exists($item_cpu['H_ID'], $list_cpus_cache)) {
-				$array_key = $item_cpu['H_ID'] . str_repeat('*', $i++);
+				$array_key = $item_cpu['H_ID'] . str_repeat('*', ++$asterix_amount);
 			} else {
 				$array_key = $item_cpu['H_ID'];
+				$asterix_amount = 0;
 			}
 			$list_cpus_cache[$array_key]['MANUFACTURER'] = $item_cpu['MANUFACTURER'];
 			$list_cpus_cache[$array_key]['TYPE'] = $item_cpu['TYPE'];
@@ -188,34 +194,40 @@ class ComponentsNotification
 		$result_memories = mysqli_query($connection, $sql);
 		
 		$list_memories = array();
-		$i = 0;
+		$asterix_amount = 0;
 		while ($item_memory = mysqli_fetch_array($result_memories)) {
+			if ($item_memory['CAPACITY'] == NULL or $item_memory['CAPACITY'] == 0) {
+				continue;
+			}
 			if (array_key_exists($item_memory['HARDWARE_ID'], $list_memories)){
-				$array_key = $item_memory['HARDWARE_ID'] . str_repeat("*", $i++);
+				$array_key = $item_memory['HARDWARE_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_memory['HARDWARE_ID'];
+				$asterix_amount = 0;
 			}
 			$list_memories[$array_key]['TYPE'] = $item_memory['TYPE'];
 			$list_memories[$array_key]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
 			$list_memories[$array_key]['ASSET'] = $item_memory['HARDWARE_ID'];
 		}
-
-		$i = 0;
+		$asterix_amount = 0;
 		$list_memories_cache = array();
 		$sql = "SELECT * FROM memories_cache";
 		$result_query = mysqli_query($connection, $sql);
 		while ($item_memory = mysqli_fetch_array($result_query)) {
+			if ($item_memory['CAPACITY'] == NULL or $item_memory['CAPACITY'] == 0) {
+				continue;
+			}
 			if (array_key_exists($item_memory['H_ID'], $list_memories_cache)) {
-				$array_key = $item_memory['H_ID'] . str_repeat("*", $i++);
+				$array_key = $item_memory['H_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_memory['H_ID'];
+				$asterix_amount = 0;
 			}
 			$list_memories_cache[$array_key]['TYPE'] = $item_memory['TYPE'];
 			$list_memories_cache[$array_key]['CAPACITY (MB)'] = $item_memory['CAPACITY'];
 			$list_memories_cache[$array_key]['ASSET'] = $item_memory['H_ID'];
 		}
 
-		
 		$added_memories = array();
 		$removed_memories = array();
 		
@@ -246,12 +258,13 @@ class ComponentsNotification
 		$result_monitor = mysqli_query($connection, $sql);
 		
 		$list_monitors = array();
-		$i = 0;
+		$asterix_amount = 0;
 		while($item_monitor = mysqli_fetch_array($result_monitor)) {
 			if (array_key_exists($item_monitor['HARDWARE_ID'], $list_monitors)) {
-				$array_key = $item_monitor['HARDWARE_ID'] . str_repeat("*", $i++);
+				$array_key = $item_monitor['HARDWARE_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_monitor['HARDWARE_ID'];
+				$asterix_amount = 0;
 			}
 			
 			$list_monitors[$array_key]['MANUFACTURER'] = $item_monitor['MANUFACTURER'];		
@@ -263,12 +276,13 @@ class ComponentsNotification
 		$result_query = mysqli_query($connection, $sql);
 
 		$list_monitors_cache = array();
-		$i = 0;
+		$asterix_amount = 0;
 		while ($item_monitor = mysqli_fetch_array($result_query)) {
 			if (array_key_exists($item_monitor['H_ID'], $list_monitors_cache)) {
-				$array_key = $item_monitor['H_ID'] . str_repeat("*", $i++);
+				$array_key = $item_monitor['H_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_monitor['H_ID'];
+				$asterix_amount = 0;
 			}
 			
 			$list_monitors_cache[$array_key]['MANUFACTURER'] = $item_monitor['MANUFACTURER'];
@@ -301,15 +315,16 @@ class ComponentsNotification
 		$result_storages = mysqli_query($connection, $sql);
 		
 		$list_storages = array();
-		$i = 1;
+		$asterix_amount = 0;
 		while ($item_storages = mysqli_fetch_array($result_storages)) {
 			if ($item_storages['DISKSIZE'] < 16000) {
 				continue;
 			}
 			if (array_key_exists($item_storages['HARDWARE_ID'], $list_storages)) {
-				$array_key = $item_storages['HARDWARE_ID'] . str_repeat("*", $i++);
+				$array_key = $item_storages['HARDWARE_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_storages['HARDWARE_ID'];
+				$asterix_amount = 0;
 			}
 
 			$list_storages[$array_key]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
@@ -322,21 +337,22 @@ class ComponentsNotification
 		$result_query = mysqli_query($connection, $sql);
 		
 		$list_storages_cache = array();
-		$i = 1;
+		$asterix_amount = 0;
 		while ($item_storages = mysqli_fetch_array($result_query)) {
 			if ($item_storages['DISKSIZE'] < 16000) {
 				continue;
 			}
 			if (array_key_exists($item_storages['H_ID'], $list_storages_cache)) {
-				$array_key = $item_storages['H_ID'] . str_repeat("*", $i++);
+				$array_key = $item_storages['H_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_storages['H_ID'];
+				$asterix_amount = 0;
 			}
 
 			$list_storages_cache[$array_key]['MANUFACTURER'] = $item_storages['MANUFACTURER'];
 			$list_storages_cache[$array_key]['DISKSIZE (MB)'] = $item_storages['DISKSIZE'];
 			$list_storages_cache[$array_key]['MODEL'] = $item_storages['MODEL'];
-			$list_storages_cache[$array_key]['ASSET'] = $item_storages['HARDWARE_ID'];
+			$list_storages_cache[$array_key]['ASSET'] = $item_storages['H_ID'];
 		}
 		
 		$added_storages = array();
@@ -365,13 +381,14 @@ class ComponentsNotification
 		$result_videos = mysqli_query($connection, $sql);
 
 		$list_videos = array();
-		$i = 1;
+		$asterix_amount = 0;
 		$array_key = NULL;
 		while($item_videos = mysqli_fetch_array($result_videos)) {
 			if (array_key_exists($item_videos['HARDWARE_ID'], $list_videos)) {
-				$array_key = $item_videos['HARDWARE_ID'] . str_repeat("*", $i++);
+				$array_key = $item_videos['HARDWARE_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_videos['HARDWARE_ID'];
+				$asterix_amount = 0;
 			}
 			$list_videos[$array_key]['NAME'] = $item_videos['NAME'];		
 			$list_videos[$array_key]['MEMORY'] = $item_videos['MEMORY'];		
@@ -383,12 +400,13 @@ class ComponentsNotification
 		$result_query = mysqli_query($connection, $sql);
 
 		$list_videos_cache = array();
-		$i = 1;
+		$asterix_amount = 0;
 		while($item_videos = mysqli_fetch_array($result_query)) {
 			if (array_key_exists($item_videos['H_ID'], $list_videos_cache)) {
-				$array_key = $item_videos['H_ID'] . str_repeat("*", $i++);
+				$array_key = $item_videos['H_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_videos['H_ID'];
+				$asterix_amount = 0;
 			}	
 			
 			$list_videos_cache[$array_key]['NAME'] = $item_videos['NAME'];		
