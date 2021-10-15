@@ -1,3 +1,7 @@
+# 1.2 - 2021-10-15
+## Changelog: Adicionado
+- Arquivo .html que especifica o estilo do CSS utilizado no E-mail a ser enviado.
+
 # 1.1 - 2021-10-10
 ## Changelog: Adicionado
 - Função filter_array_cells().
