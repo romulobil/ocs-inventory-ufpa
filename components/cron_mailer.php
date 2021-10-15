@@ -18,3 +18,4 @@ require_once __DIR__ . '/send.php';
 		Send_Email($body_mail);
 	else 
 		echo "Nada a enviar :(" . "\n";	
+	
