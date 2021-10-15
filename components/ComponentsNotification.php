@@ -30,8 +30,8 @@ class ComponentsNotification
 	public $html_part_remove;
 
 	public function get_html_info_addition($list_hardware, $connection, $hard_component) {
-		$count_line = 0;
 		if ($this->html_part_addition == '') {
+				// Import css style 
 				$this->html_part_addition .= "
 				 " .  file_get_contents(__DIR__ . '/html_css_part.html') . "
 				<hr>
@@ -48,27 +48,27 @@ class ComponentsNotification
 				<tr><thead>\n";
 
 		$reference_array = array_key_first($list_hardware);
-			foreach ($list_hardware[$reference_array] as $label => $value) {
-				$this->html_part_addition .= "<th class='nota'>$label</th>\n";
-			} 
+		foreach ($list_hardware[$reference_array] as $label => $value) {
+			$this->html_part_addition .= "<th class='nota'>$label</th>\n";
+		} 
+			$this->html_part_addition .= "<th class='nota'> STATUS </th>";
 		$this->html_part_addition .= "</tr></thead>\n<tbody><tr class='linhaPar linha'>";
 	
 		$id_asset = NULL; 
 		// for ($i = $reference_array; $i <= array_key_last($list_hardware); $i++) {
 		foreach (array_keys($list_hardware) as $key) {
 			foreach ($list_hardware["$key"] as $feature => $value) {
-				$count_line++;
 				if ($value == 'Unknown' or $value == '') { 
 					$this->html_part_addition .= "<td class='nota' nowrap='nowrap'> Uninformed </td>\n";
 					continue;
 				}
 				if ($feature == "ASSET") {
-					$sql = "SELECT USERID FROM hardware WHERE ID =" . trim($value);
+					$sql = "SELECT TAG FROM accountinfo WHERE HARDWARE_ID = " . trim($value);
 					$result_id = mysqli_query($connection, $sql);
 					$id_asset = mysqli_fetch_array($result_id);
 
 					if (isset($id_asset)) {	
-						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'>" . $id_asset['USERID'] . "</td><td class='nota' bgcolor='green'> Added </td>\n";
+						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'>" . $id_asset['TAG'] . "</td><td class='nota' bgcolor='green'> Added </td>\n";
 					} else {
 						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota' bgcolor='green'> Added </td>\n";
 					}
@@ -83,8 +83,8 @@ class ComponentsNotification
 	}
 	
 	public function get_html_info_removed($hardware_cache, $connection, $hard_component) {
-		$count_line = 0;
 		if ($this->html_part_remove == '') {
+				// import css style
 				$this->html_part_remove .= "
 				" . file_get_contents(__DIR__ . '/html_css_part.html') ."
 					<hr>
@@ -102,22 +102,22 @@ class ComponentsNotification
 		foreach ($hardware_cache[$reference_array] as $label => $value) {
 			$this->html_part_remove .= "<th class='nota'>$label</th>\n";
 		}
+		$this->html_part_remove .= "<th class='nota'> STATUS </th>";
 		$this->html_part_remove .= "</tr>\n</thead><tbody><tr class='linhaPar linha'>";
 
 		$id_asset = NULL;
 		foreach (array_keys($hardware_cache) as $key) {
 			foreach ($hardware_cache["$key"] as $feature => $value) {
-				$count_line++;
 				if ($value == 'Unknown' or $value == '') {
 					$this->html_part_remove .= "<td class='nota' nowrap='nowrap'> Uninformed </td>\n";
 					continue;
 				}
 				if ($feature == "ASSET") {
-					$sql = "SELECT USERID FROM id_assets_cache WHERE ID = " . trim($value);
+					$sql = "SELECT TAG FROM id_assets_cache WHERE H_ID = " . trim($value);
 					$result_id = mysqli_query($connection, $sql);
 					$id_asset = mysqli_fetch_array($result_id);
 					if (isset($id_asset)) {
-						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'>" . $id_asset['USERID'] . "</td><td class='nota' bgcolor='#e31111'> Removed </td>\n";
+						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'>" . $id_asset['TAG'] . "</td><td class='nota' bgcolor='#e31111'> Removed </td>\n";
 					} else {
 						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota' bgcolor='#e31111' nowrap='nowrap'> Removed </td>\n";
 					}
@@ -339,6 +339,7 @@ class ComponentsNotification
 		$list_storages_cache = array();
 		$asterix_amount = 0;
 		while ($item_storages = mysqli_fetch_array($result_query)) {
+			// check if this device is which really is
 			if ($item_storages['DISKSIZE'] < 16000) {
 				continue;
 			}
@@ -437,7 +438,7 @@ class ComponentsNotification
 	public function update_id_assets() {
 		$connection = db_connect();
 		$sql = "TRUNCATE TABLE id_assets_cache;";
-		$sql .= "REPLACE INTO id_assets_cache(ID, USERID) SELECT ID, USERID FROM hardware;";
+		$sql .= "REPLACE INTO id_assets_cache(H_ID, TAG) SELECT HARDWARE_ID, TAG FROM accountinfo;";
 		mysqli_multi_query($connection, $sql);
 	}
 }
