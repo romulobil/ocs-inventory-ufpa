@@ -1,5 +1,10 @@
 <?php
-
+/**
+* function that filter empty cells of any
+* @author claudio966
+* @acess public
+* @return an array 
+*/
 function filter_array_cells($array) {
 	foreach(array_keys($array) as $array_key) {
 		foreach($array[$array_key] as $key => $value) {
@@ -40,7 +45,6 @@ class ComponentsNotification
 				</center>
 				<hr>";
 		}
-		//<table border='collapse' bgcolor='B8B0AE'>
 		$this->html_part_addition .= "
 				<br>
 				<table class='tabelaRelatorio' width='100%'>
@@ -132,7 +136,11 @@ class ComponentsNotification
 		$this->html_part_remove .= "</table></tbody><br>";
 			
 	}
-
+	/**
+	* A method that collect information about the cpu of asset
+	* @acess public
+	* @return void 
+	*/
 	public function get_cpus() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM cpus";
@@ -188,6 +196,11 @@ class ComponentsNotification
 		}
 	}
 
+	/**
+	* A method that collect information about the memories of asset
+	* @acess public
+	* @return void 
+	*/
 	public function get_memories() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM memories";
@@ -252,6 +265,11 @@ class ComponentsNotification
 		}
 	}
 
+	/**
+	* A method that collect information about the monitors of asset
+	* @acess public
+	* @return void 
+	*/
 	public function get_monitors() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM monitors";
@@ -309,6 +327,11 @@ class ComponentsNotification
 			mysqli_multi_query($connection, $sql);
 	}
 
+	/**
+	* A method that collect information about the storages(like HD, SSD, ...) of asset
+	* @acess public
+	* @return void 
+	*/
 	public function get_storages() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM storages";
@@ -375,7 +398,11 @@ class ComponentsNotification
 			mysqli_multi_query($connection, $sql);
 		}
 	}
-
+	/**
+	* A method that collect information about the board videos of asset
+	* @acess public
+	* @return void 
+	*/
 	public function get_videos() {
 		$connection = db_connect();
 		$sql = "SELECT * FROM videos";
@@ -434,7 +461,11 @@ class ComponentsNotification
 			mysqli_multi_query($connection, $sql);
 		}
 	}
-
+	/**
+	* A function that update the fields id and tag of cache table, whenever a asset is removed or added
+	* @acess public
+	* @return void 
+	*/
 	public function update_id_assets() {
 		$connection = db_connect();
 		$sql = "TRUNCATE TABLE id_assets_cache;";

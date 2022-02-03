@@ -2,8 +2,9 @@
  use PHPMailer\PHPMailer\PHPMailer;
  use PHPMailer\PHPMailer\Exception;
  use PHPMailer\PHPMailer\SMTP;
-
-
+ use League\OAuth2\Client\Provider\Google;
+ 
+ session_start();
 function get_credentials() {
 	require_once(__DIR__ . '/../../var.php');
 	require_once(CONF_MYSQL);
@@ -21,6 +22,7 @@ function get_credentials() {
 	return $all_credentials;	
 }
 
+	
 function Send_Email($html) {
 	require __DIR__.'/../../vendor/phpmailer/phpmailer/src/Exception.php';
 	require __DIR__.'/../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
@@ -50,10 +52,9 @@ function Send_Email($html) {
 	// $mail->AddBCC('email@email.com', 'Nome da pessoa'); // Cópia Oculta
 
 	/* ###########################
-	 * # CONFIGURA # 
+	 * # 	USER CONFIG          # 
 	 * ###########################
 	 */
-					
 	/* Define que é uma conexão SMTP */
 	$mail->IsSMTP();
 	/* Define o endereço do servidor de envio */
@@ -106,7 +107,7 @@ function Send_Email($html) {
 		fwrite($log_file, date('d/m/Y -- H:i:s') . " | The email has been send sucessfully.\n");
 		fclose($log_file);
 	} else {
-		fwrite($log_file, date('d/m/Y == H:i:s') . " The email hasn't been send with sucess. Please contact the suport\n");
+		fwrite($log_file, date('d/m/Y == H:i:s') . " | The email hasn't been send with sucess. Please contact the suport\n");
 		echo "<b>Error logs:</b> <br />" . $mail->ErrorInfo;
 	}
 
