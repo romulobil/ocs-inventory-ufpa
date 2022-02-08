@@ -5,6 +5,10 @@
  use League\OAuth2\Client\Provider\Google;
  
  session_start();
+
+/*
+* Get credential of user's email on database OCSWEB
+*/
 function get_credentials() {
 	require_once(__DIR__ . '/../../var.php');
 	require_once(CONF_MYSQL);
@@ -42,7 +46,7 @@ function Send_Email($html) {
 	$username = $all_credentials['NOTIF_NAME_ADMIN']['TVALUE'];
 	$password = $all_credentials['NOTIF_PASSWD_SMTP']['TVALUE'];
 
-	/* Se for do Gmail o servidor é: smtp.gmail.com */
+	/* Define a SMTP Host */
 	$host_do_email = $all_credentials['NOTIF_SMTP_HOST']['TVALUE'];
 
 	/* Configura os destinatários  */
@@ -55,19 +59,19 @@ function Send_Email($html) {
 	 * # 	USER CONFIG          # 
 	 * ###########################
 	 */
-	/* Define que é uma conexão SMTP */
+	/* Define a SMTP conection */
 	$mail->IsSMTP();
-	/* Define o endereço do servidor de envio */
+	/* Define an address of host */
 	$mail->Host = $host_do_email;
-	/* Utilizar autenticação SMTP */ 
+	/* Use SMTP autentication */ 
 	$mail->SMTPAuth = true;
-	/* Protocolo da conexão */
+	/* Connection Protocol */
 	$mail->SMTPSecure = $all_credentials['NOTIF_SEND_MODE']['TVALUE'];
-	/* Porta da conexão */
+	/* connection Port */
 	$mail->Port = $all_credentials['NOTIF_PORT_SMTP']['TVALUE'];
-	/* Email ou usuário para autenticação */
+	/* Username */
 	$mail->Username = $usermail;
-	/* Senha do usuário */
+	/* User's password */
 	$mail->Password = $password;
 	$mail->SMTPDebug = SMTP::DEBUG_SERVER;
 
@@ -75,41 +79,41 @@ function Send_Email($html) {
 	$mail->From = $usermail; // Seu e-mail
 	$mail->FromName = $username; // Seu nome
 
-	/* Configura a mensagem */
-	$mail->IsHTML(true); // Configura um e-mail em HTML
+	/* Message Configuring */
+	$mail->IsHTML(true); 
 
 	/*   
 	 * Se tiver problemas com acentos, modifique o charset
 	 * para ISO-8859-1  
 	 */
-	$mail->CharSet = 'ISO-8859-1'; // Charset da mensagem (opcional)
+	$mail->CharSet = 'ISO-8859-1'; 
 
-	/* Configura o texto e assunto */
-	$mail->Subject  = $assunto; // Assunto da mensagem
-	$mail->Body = $message; // A mensagem em HTML
-	$mail->AltBody = trim(strip_tags($message)); // A mesma mensagem em texto puro
+	/* Define a text and subject*/
+	$mail->Subject  = $assunto; 
+	$mail->Body = $message; // HTML message
+	$mail->AltBody = trim(strip_tags($message)); // Alternative message if necessary
 
 	/* Configura o anexo a ser enviado (se tiver um) */
 	//$mail->AddAttachment("foto.jpg", "foto.jpg");  // Insere um anexo
 
-	/* Envia o email */
+	/* Send the email */
 	if ($all_credentials['NOTIF_FOLLOW']['TVALUE'] == 'ON')
 		$sended_mail = $mail->Send();
 
-	/* Limpa tudo */
+	/* Clean everything associated with email */
 	$mail->ClearAllRecipients();
 	$mail->ClearAttachments();
 
-	/* Mostra se o email foi enviado ou não */
+	// Generate a log file of sending of email
 	date_default_timezone_set("America/Belem");
 	$log_file = fopen(__DIR__ . '/log_file', 'a') or die('Unable to open the log file');
 	if ($sended_mail) {
 		fwrite($log_file, date('d/m/Y -- H:i:s') . " | The email has been send sucessfully.\n");
-		fclose($log_file);
 	} else {
 		fwrite($log_file, date('d/m/Y == H:i:s') . " | The email hasn't been send with sucess. Please contact the suport\n");
-		echo "<b>Error logs:</b> <br />" . $mail->ErrorInfo;
+		echo "<b>Error logs:</b> <br />" . $mail->ErrorInfo . "\n";
 	}
+	fclose($log_file);
 
 }
 
