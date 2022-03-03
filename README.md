@@ -41,3 +41,4 @@ And with this, you will be welcomed with a login screen. The default credentials
 
 ## Configuring the notifications
 Inside the system go to `Configuration > Notifications`. You will see this following page:
+![notification_page](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/blob/master/downloads/ocs_inventory_notifications_config.png "title")
