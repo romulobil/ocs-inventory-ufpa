@@ -41,4 +41,16 @@ And with this, you will be welcomed with a login screen. The default credentials
 
 ## Configuring the notifications
 Inside the system go to `Configuration > Notifications`. You will see this following page:
-![notification_page](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/blob/master/downloads/ocs_inventory_notifications_config.png "title")
+
+![notification_page](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/raw/master/downloads/ocs_inventory_notifications_config.png "title")
+
+Some fields of this page is self explanatory. But is also important specify all these fields. Therefore:
+- `NOTIF_FOLLOW`: A checklist to activate the notification by email.
+- `NOTIF_MAIL_ADMIN`: administrator mail to receive notifications.
+- `NOTIF_NAME_ADMIN`: username of administrator.
+- `NOTIF_SEND_MODE`: Type of mail send mode. In the other words: With criptography(SSL | TLS) or not(Only SMTP). Remember, the most mail clients doesn't allowed send mails without some criptography. Thus, is extremely recommended to use SSL or TLS protocol in this process.
+- `NOTIF_SMTP_HOST`: Your host smtp to send mail. e.g. `smtp.gmail.com` for google mails. Remember, if you pretend use an organization mail, consult your network _admin_ for more information about SMTP host of its organization.
+- `NOTIF_PORT_SMTP`: This field depends of protocol use in NOTIF_SEND_MODE. That is, if TLS is being use, then, the port number is 587. Else, if SSL is being use, then, the port number is 465.
+- `NOTIF_PASSWD_SMTP`: Your password mail.
+
+After finish this configuration remember to save in
