@@ -13,15 +13,17 @@ Once installed this preview packages and in possession of theses [files here](ht
 
 > $ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
 
+:warning: Note, there is a _dot_ in the final of above command. Remember, this dot represent a special directory on GNU/Linux system, that is, the itself directory. 
+
 > $ sudo docker-compose up -d
 
 
 This command will be building your base image of OCS Inventory application and make the deploy of this application in an new docker container.
 Furthermore, remember, this application bring with you a database. Therefore, a MySQL container will be building in this process.
 
-Whether everything works as expected, the both containers, OCS application and MySQL, will be running !
+If everything works as expected, the both containers, OCS application and MySQL, will be running !
 
-For verify this, use this docker's command below:
+For verify this, use this docker command below:
 
 > $ sudo docker ps -a
 
@@ -37,3 +39,5 @@ And with this, you will be welcomed with a login screen. The default credentials
 :exclamation: It's no longer necessary to say the extremely required to change these credentials, once inside the system.
 |-----------------------------------------|
 
+## Configuring the notifications
+Inside the system go to `Configuration > Notifications`. You will see this following page:
