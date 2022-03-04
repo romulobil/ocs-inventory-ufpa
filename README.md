@@ -17,7 +17,6 @@ Once installed this preview packages and in possession of theses [files here](ht
 
 > $ sudo docker-compose up -d
 
-
 This command will be building your base image of OCS Inventory application and make the deploy of this application in an new docker container.
 Furthermore, remember, this application bring with you a database. Therefore, a MySQL container will be building in this process.
 
@@ -46,11 +45,11 @@ Inside the system go to `Configuration > Notifications`. You will see this follo
 
 Some fields of this page is self explanatory. But is also important specify all these fields. Therefore:
 - `NOTIF_FOLLOW`: A checklist to activate the notification by email.
-- `NOTIF_MAIL_ADMIN`: administrator mail to receive notifications.
-- `NOTIF_NAME_ADMIN`: username of administrator.
+- `NOTIF_MAIL_ADMIN`: Administrator mail to receive notifications.
+- `NOTIF_NAME_ADMIN`: Username of administrator.
 - `NOTIF_SEND_MODE`: Type of mail send mode. In the other words: With criptography(SSL | TLS) or not(Only SMTP). Remember, the most mail clients doesn't allowed send mails without some criptography. Thus, is extremely recommended to use SSL or TLS protocol in this process.
 - `NOTIF_SMTP_HOST`: Your host smtp to send mail. e.g. `smtp.gmail.com` for google mails. Remember, if you pretend use an organization mail, consult your network _admin_ for more information about SMTP host of its organization.
 - `NOTIF_PORT_SMTP`: This field depends of protocol use in NOTIF_SEND_MODE. That is, if TLS is being use, then, the port number is 587. Else, if SSL is being use, then, the port number is 465.
 - `NOTIF_PASSWD_SMTP`: Your password mail.
 
-After finish this configuration remember to save in
+After finish this configuration remember to save in `UPDATE`.
