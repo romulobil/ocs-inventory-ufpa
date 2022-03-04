@@ -15,11 +15,11 @@ Once installed this preview packages and in possession of theses [files here](ht
 > $ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
 
 :warning: Before to execute the next command, don't forget to setting up the database password credentials inside the _docker-compose.yml_ file. Theses credentials are:
-> $ sudo docker-compose up -d
-
 - `OCS_DB_PASS`
 - `MYSQL_ROOT_PASSWORD`
 - `MYSQL_PASSWORD` 
+
+> $ sudo docker-compose up -d
 
 Theses command will be building your base image of OCS Inventory application and make the deploy of this application in an new docker container.
 Furthermore, remember, this application bring with you a database. Therefore, a MySQL container will be building in this process.
