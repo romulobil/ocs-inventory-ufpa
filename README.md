@@ -11,13 +11,17 @@ For use this code, it's necessary the Docker's correlated package is installed i
 ## :information_source: How to Use:
 Once installed this preview packages and in possession of theses [files here](https://duckduckgo.com), execute this following comands inside a directory that contains the _config_ files aforementioned. 
 
+:warning: Note, there is a _dot_ in the final of below command. Remember, this dot represent a special directory on GNU/Linux system, that is, the itself directory.
 > $ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
 
-:warning: Note, there is a _dot_ in the final of above command. Remember, this dot represent a special directory on GNU/Linux system, that is, the itself directory. 
-
+:warning: Before to execute the next command, don't forget to setting up the database password credentials inside the _docker-compose.yml_ file. Theses credentials are:
 > $ sudo docker-compose up -d
 
-This command will be building your base image of OCS Inventory application and make the deploy of this application in an new docker container.
+- `OCS_DB_PASS`
+- `MYSQL_ROOT_PASSWORD`
+- `MYSQL_PASSWORD` 
+
+Theses command will be building your base image of OCS Inventory application and make the deploy of this application in an new docker container.
 Furthermore, remember, this application bring with you a database. Therefore, a MySQL container will be building in this process.
 
 If everything works as expected, the both containers, OCS application and MySQL, will be running !
@@ -35,7 +39,7 @@ And with this, you will be welcomed with a login screen. The default credentials
 - user: admin
 - password: admin
 
-:exclamation: It's no longer necessary to say the extremely required to change these credentials, once inside the system.
+:exclamation: It's no longer necessary to say the extremely required to change theses credentials, once inside the system.
 |-----------------------------------------|
 
 ## Configuring the notifications
@@ -43,7 +47,7 @@ Inside the system go to `Configuration > Notifications`. You will see this follo
 
 ![notification_page](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/raw/master/downloads/ocs_inventory_notifications_config.png "title")
 
-Some fields of this page is self explanatory. But is also important specify all these fields. Therefore:
+Some fields of this page is self explanatory. But is also important specify all theses fields. Therefore:
 - `NOTIF_FOLLOW`: A checklist to activate the notification by email.
 - `NOTIF_MAIL_ADMIN`: Administrator mail to receive notifications.
 - `NOTIF_NAME_ADMIN`: Username of administrator.
