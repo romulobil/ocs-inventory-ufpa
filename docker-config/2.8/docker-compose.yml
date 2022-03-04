@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  ocsapplication:
+    image: ocsinventory/ocsinventory-docker-image-ctic:2.8
+    container_name : ocsinventory-server-2.8
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - "perlcomdata:/etc/ocsinventory-server"
+      - "ocsreportsdata:/usr/share/ocsinventory-reports/ocsreports"
+      - "varlibdata:/var/lib/ocsinventory-reports"
+      - "httpdconfdata:/etc/httpd/conf.d"
+    environment:
+      TZ: America/Belem
+      OCS_DB_SERVER: ocsinventory-db-2.8
+      OCS_DB_USER: ocsuser
+      OCS_DB_PASS: 
+      OCS_DB_NAME: ocsweb
+      # See documentation to set up SSL for MySQL
+      OCS_SSL_ENABLED: 0
+    links:
+      - ocsdb
+    networks:
+      - localocs
+    depends_on:
+      - ocsdb    
+
+  ocsdb :
+    image : mysql:5.7
+    container_name : ocsinventory-db-2.8
+    restart: always
+    ports :
+      - 3306:3306
+    volumes :
+      - ./sql/:/docker-entrypoint-initdb.d/
+      - sqldata:/var/lib/mysql
+      - bareos:/var/bareos-dump
+    environment:
+      TZ: America/Belem
+      MYSQL_ROOT_PASSWORD : 
+      MYSQL_USER : ocsuser
+      MYSQL_PASSWORD : 
+      MYSQL_DATABASE : ocsweb
+    networks:
+      - localocs
+  
+networks:
+  localocs:
+
+volumes:
+  perlcomdata:
+  ocsreportsdata:
+  varlibdata:
+  httpdconfdata:
+  sqldata:
+  bareos:
+          driver: local
+          driver_opts:
+                  o: bind
+                  type: none
+                  device: /var/bareos-dump
+  
