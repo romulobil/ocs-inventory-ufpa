@@ -59,6 +59,10 @@ Some fields of this page is self explanatory. But is also important specify all 
 After finish this configuration remember to save in `UPDATE`.
 
 # Configuring the crontab
-Now it's necessary to configure the execution of script on crontab, that used theses credentials afore configured to send the emails to administrator.
+Now it's necessary to configure the execution of script on crontab, that used theses credentials afore configured to send the emails to administrator. Therefore, in the line showed below, there is an example of crontab line that 
+can be insert in your docker host machine crontab file.
+
+> 0  11   * * 1-6	root	docker exec <container-id> php73 /usr/share/ocsinventory-reports/ocsreports/require/components/cron_mailer.php  
+
 
 
