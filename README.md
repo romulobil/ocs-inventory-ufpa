@@ -6,10 +6,10 @@ This code represents an improve of notification mechanism already present in OCS
 For use this code, it's necessary the Docker's correlated package is installed in your machine. Thus, make sure:
 - The docker main packages in your machine was installed.
 - The docker-compose was installed, too.
-- The current directory of work contains all files of [files here](https://duckduckgo.com). Theses files are essecial for configuration of containers.
+- The current directory of work contains all files of [here](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/tree/master/docker-config/2.8). Theses files are essecial for configuration of containers.
 
 ## :information_source: How to Use:
-Once installed this preview packages and in possession of theses [files here](https://duckduckgo.com), execute this following comands inside a directory that contains the _config_ files aforementioned. 
+Once installed this preview packages and in possession of theses [files here](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/tree/master/docker-config/2.8), execute this following comands inside a directory that contains the _config_ files aforementioned. 
 
 :warning: Note, there is a _dot_ in the final of below command. Remember, this dot represent a special directory on GNU/Linux system, that is, the itself directory.
 > $ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
