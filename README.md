@@ -14,7 +14,7 @@ Once installed this preview packages and in possession of theses [files here](ht
 :warning: Note, there is a _dot_ in the final of below command. Remember, this dot represent a special directory on GNU/Linux system, that is, the itself directory.
 > $ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
 
-:warning: Before to execute the next command, don't forget to setting up the database password credentials inside the _docker-compose.yml_ file. Theses credentials are:
+:warning: Before to execute the next command, don't forget to configure the database password credentials inside the _docker-compose.yml_ file. Theses credentials are:
 - `OCS_DB_PASS`
 - `MYSQL_ROOT_PASSWORD`
 - `MYSQL_PASSWORD` 
@@ -42,7 +42,7 @@ And with this, you will be welcomed with a login screen. The default credentials
 :exclamation: It's no longer necessary to say the extremely required to change theses credentials, once inside the system.
 |-----------------------------------------|
 
-## Configuring the notifications
+## Configuring the credentials of notifications
 Inside the system go to `Configuration > Notifications`. You will see this following page:
 
 ![notification_page](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/raw/master/downloads/ocs_inventory_notifications_config.png "title")
@@ -53,7 +53,12 @@ Some fields of this page is self explanatory. But is also important specify all 
 - `NOTIF_NAME_ADMIN`: Username of administrator.
 - `NOTIF_SEND_MODE`: Type of mail send mode. In the other words: With criptography(SSL | TLS) or not(Only SMTP). Remember, the most mail clients doesn't allowed send mails without some criptography. Thus, is extremely recommended to use SSL or TLS protocol in this process.
 - `NOTIF_SMTP_HOST`: Your host smtp to send mail. e.g. `smtp.gmail.com` for google mails. Remember, if you pretend use an organization mail, consult your network _admin_ for more information about SMTP host of its organization.
-- `NOTIF_PORT_SMTP`: This field depends of protocol use in NOTIF_SEND_MODE. That is, if TLS is being use, then, the port number is 587. Else, if SSL is being use, then, the port number is 465.
+- `NOTIF_PORT_SMTP`: This field depends of protocol use in NOTIF_SEND_MODE. That is, if TLS is being used, then, the port number is 587. Else, if SSL is being used, then, the port number is 465.
 - `NOTIF_PASSWD_SMTP`: Your password mail.
 
 After finish this configuration remember to save in `UPDATE`.
+
+# Configuring the crontab
+Now it's necessary to configure the execution of script on crontab, that used theses credentials afore configured to send the emails to administrator.
+
+
