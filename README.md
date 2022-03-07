@@ -64,7 +64,7 @@ can be insert in your docker host machine crontab file.
 
 ` 0 11 * * 1-6	root	docker exec container-id php73 /usr/share/ocsinventory-reports/ocsreports/require/components cron_mailer.php`   
 
-:information_source: The line above means that crontab will be to execute the php script _cronmailer.php_ every 11 a.m from Monday to Friday.
+:information_source: The line above means that crontab will be to execute the php script _cronmailer.php_ every 11:00 a.m from Monday to Friday.
 
 :warning: Remember to change the _container-id_ of the line above by the container ID of your OCS application.
 
