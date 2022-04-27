@@ -12,14 +12,18 @@ For use this code, it's necessary the Docker's correlated package is installed i
 Once installed this preview packages and in possession of theses [files here](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/tree/master/docker-config/2.8), execute this following comands inside a directory that contains the _config_ files aforementioned. 
 
 :warning: Note, there is a _dot_ in the final of below command. Remember, this dot represent a special directory on GNU/Linux system, that is, the itself directory.
-> $ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
+```console
+$ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
+```
 
 :warning: Before to execute the next command, don't forget to configure the database password credentials inside the _docker-compose.yml_ file. Theses credentials are:
 - `OCS_DB_PASS`
 - `MYSQL_ROOT_PASSWORD`
 - `MYSQL_PASSWORD` 
 
-> $ sudo docker-compose up -d
+```console
+$ sudo docker-compose up -d
+```
 
 Theses command will be building your base image of OCS Inventory application and make the deploy of this application in an new docker container.
 Furthermore, remember, this application bring with you a database. Therefore, a MySQL container will be building in this process.
@@ -28,7 +32,9 @@ If everything works as expected, the both containers, OCS application and MySQL,
 
 For verify this, use this docker command below:
 
-> $ sudo docker ps -a
+```console
+$ sudo docker ps -a
+```
 
 ## Acessing the OCS application
 For acess the application, it's naturally necessary to know the IP address of the machine. Known this, in some browser, insert this URL:
