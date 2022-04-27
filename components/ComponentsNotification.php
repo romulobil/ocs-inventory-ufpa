@@ -72,9 +72,9 @@ class ComponentsNotification
 					$id_asset = mysqli_fetch_array($result_id);
 
 					if (isset($id_asset)) {	
-						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'>" . $id_asset['TAG'] . "</td><td class='nota' bgcolor='green'> Added </td>\n";
+						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'>" . $id_asset['TAG'] . "</td><td class='nota'> <font color='green'> Added </font></td>\n";
 					} else {
-						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota' bgcolor='green'> Added </td>\n";
+						$this->html_part_addition .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota'> <font color='green'> Added </font></td>\n";
 					}
 				} else {
 					$this->html_part_addition .= "<td class='nota'>$value</td>\n";
@@ -121,9 +121,9 @@ class ComponentsNotification
 					$result_id = mysqli_query($connection, $sql);
 					$id_asset = mysqli_fetch_array($result_id);
 					if (isset($id_asset)) {
-						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'>" . $id_asset['TAG'] . "</td><td class='nota' bgcolor='#e31111'> Removed </td>\n";
+						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'>" . $id_asset['TAG'] . "</td><td class='nota'> <font color='#e31111'> Removed </font></td>\n";
 					} else {
-						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota' bgcolor='#e31111' nowrap='nowrap'> Removed </td>\n";
+						$this->html_part_remove .= "<td class='nota' nowrap='nowrap'> Not Found </td><td class='nota' nowrap='nowrap'> <font color='#e31111'> Removed </font></td>\n";
 					}
 				} else {
 					$this->html_part_remove .= "<td class='nota' nowrap='nowrap'>$value</td>\n";
