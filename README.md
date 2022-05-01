@@ -1,6 +1,6 @@
-# Enhancement of OCS Inventory notifications mechanism
+# Enhancement of OCS Inventory Notifications Engine
 
-This code represents an improve of notification mechanism already present in OCS Inventory NG.
+This code represents an improvement of notification mechanism already present in OCS Inventory NG.
 
 ## :memo: Requirements:
 For use this code, it's necessary the Docker's correlated package is installed in your machine. Thus, make sure:
