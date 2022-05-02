@@ -12,7 +12,7 @@ require_once __DIR__ . '/send.php';
 	$mastermind->get_videos();
 	$mastermind->get_storages();	
 	$mastermind->get_cpus();	
-	//$mastermind->update_id_assets();
+	$mastermind->update_id_assets();
 	// html_part_addition e html_part_remove are public attributes of ComponentesNotification
 	$body_mail = $mastermind->html_part_addition . $mastermind->html_part_remove;
 	if ($body_mail != '')
