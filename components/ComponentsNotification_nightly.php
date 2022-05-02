@@ -228,10 +228,10 @@ class ComponentsNotification
 		$removed_memories = array();
 		$asterix_amount = 0;
 		while ($item_memory = mysqli_fetch_array($result_query_cache)) {
-			if ($item_memory['CAPACITY'] == NULL or $item_memory['CAPACITY'] == 0) {
+			if ($item_memory['CAPACITY'] == NULL or $item_memory['CAPACITY'] < 1024) {
 				continue;
 			}
-			if (array_key_exists($item_memory['H_ID'], $added_memories_cache)) {
+			if (array_key_exists($item_memory['H_ID'], $removed_memories)) {
 				$array_key = $item_memory['H_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_memory['H_ID'];
@@ -247,6 +247,7 @@ class ComponentsNotification
 			$this->get_html_info_addition($added_memories, $connection, $hard_component = "Memory(ies)");
 		}
 
+		print_r($removed_memories);
 		if ($removed_memories != NULL) {
 			$removed_memories = filter_array_cells($removed_memories);
 			$this->get_html_info_removed($removed_memories, $connection, $hard_component = "Memory(ies)");
@@ -294,7 +295,7 @@ class ComponentsNotification
 		$removed_monitors = array();
 		$asterix_amount = 0;
 		while ($item_monitor = mysqli_fetch_array($result_query_cache)) {
-			if (array_key_exists($item_monitor['H_ID'], $list_monitors_cache)) {
+			if (array_key_exists($item_monitor['H_ID'], $removed_monitors)) {
 				$array_key = $item_monitor['H_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_monitor['H_ID'];
@@ -341,7 +342,7 @@ class ComponentsNotification
 			if ($item_storages['DISKSIZE'] < 16000) {
 				continue;
 			}
-			if (array_key_exists($item_storages['HARDWARE_ID'], $list_storages)) {
+			if (array_key_exists($item_storages['HARDWARE_ID'], $added_storages)) {
 				$array_key = $item_storages['HARDWARE_ID'] . str_repeat("*", ++$asterix_amount);
 			} else {
 				$array_key = $item_storages['HARDWARE_ID'];
