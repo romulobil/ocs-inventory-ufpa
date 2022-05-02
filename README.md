@@ -59,7 +59,7 @@ Some fields of this page is self explanatory. But is also important specify all 
 - `NOTIF_NAME_ADMIN`: Username of administrator.
 - `NOTIF_SEND_MODE`: Type of mail send mode. In the other words: With criptography(SSL | TLS) or not(Only SMTP). Remember, the most mail clients doesn't allowed send mails without some criptography. Thus, is extremely recommended to use SSL or TLS protocol in this process.
 - `NOTIF_SMTP_HOST`: Your host smtp to send mail. e.g. `smtp.gmail.com` for google mails. Remember, if you pretend use an organization mail, consult your network _admin_ for more information about SMTP host of its organization.
-- `NOTIF_PORT_SMTP`: This field depends of protocol use in NOTIF_SEND_MODE. That is, if TLS is being used, then, the port number is 587. Else, if SSL is being used, then, the port number is 465.
+- `NOTIF_PORT_SMTP`: This field depends of protocol used in NOTIF_SEND_MODE. That is, if TLS is being used, then, the port number is 587. Else, if SSL is being used, then, the port number is 465.
 - `NOTIF_PASSWD_SMTP`: Your password mail.
 
 After finish this configuration remember to save in `UPDATE`.
