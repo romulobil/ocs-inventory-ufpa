@@ -1,6 +1,6 @@
-# Enhancement of OCS Inventory notifications mechanism
+# Enhancement of OCS Inventory Notifications Engine
 
-This code represents an improve of notification mechanism already present in OCS Inventory NG.
+This code represents an improvement of notification mechanism already present in OCS Inventory NG.
 
 ## :memo: Requirements:
 For use this code, it's necessary the Docker's correlated package is installed in your machine. Thus, make sure:
@@ -12,14 +12,18 @@ For use this code, it's necessary the Docker's correlated package is installed i
 Once installed this preview packages and in possession of theses [files here](https://gl.idc.ufpa.br/ocs_inventory-ufpa/2.8/-/tree/master/docker-config/2.8), execute this following comands inside a directory that contains the _config_ files aforementioned. 
 
 :warning: Note, there is a _dot_ in the final of below command. Remember, this dot represent a special directory on GNU/Linux system, that is, the itself directory.
-> $ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
+```console
+$ sudo docker build -t ocsinventory/ocsinventory-docker-image-ctic:2.8 .
+```
 
 :warning: Before to execute the next command, don't forget to configure the database password credentials inside the _docker-compose.yml_ file. Theses credentials are:
 - `OCS_DB_PASS`
 - `MYSQL_ROOT_PASSWORD`
 - `MYSQL_PASSWORD` 
 
-> $ sudo docker-compose up -d
+```console
+$ sudo docker-compose up -d
+```
 
 Theses command will be building your base image of OCS Inventory application and make the deploy of this application in an new docker container.
 Furthermore, remember, this application bring with you a database. Therefore, a MySQL container will be building in this process.
@@ -28,7 +32,9 @@ If everything works as expected, the both containers, OCS application and MySQL,
 
 For verify this, use this docker command below:
 
-> $ sudo docker ps -a
+```console
+$ sudo docker ps -a
+```
 
 ## Acessing the OCS application
 For acess the application, it's naturally necessary to know the IP address of the machine. Known this, in some browser, insert this URL:
@@ -59,10 +65,10 @@ Some fields of this page is self explanatory. But is also important specify all 
 After finish this configuration remember to save in `UPDATE`.
 
 # Configuring the crontab
-Now, it's necessary to configure the execution of script on crontab, that used theses credentials afore configured to send the emails to administrator. Therefore, in the line showed below, there is an example of crontab line that 
+Now, it's necessary to configure the execution of script in crontab, that used theses credentials afore configured to send the emails to administrator. Therefore, in the line showed below, there is an example of crontab line that 
 can be insert in your docker host machine crontab file.
 
-` 0 11 * * 1-6	root	docker exec container-id php73 /usr/share/ocsinventory-reports/ocsreports/require/components cron_mailer.php`   
+` 0 11 * * 1-6	root docker exec container-id php73 /usr/share/ocsinventory-reports/ocsreports/require/components cron_mailer.php`   
 
 :information_source: The line above means that crontab will be to execute the php script _cronmailer.php_ every 11:00 a.m from Monday to Friday.
 
